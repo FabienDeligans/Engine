@@ -9,7 +9,7 @@ using ForeignKeyAttribute = Engine.CustomAttribute.ForeignKeyAttribute;
 
 namespace Engine.Database
 {
-    public class BaseContext: IDisposable
+    public class BaseContext : IDisposable
     {
         private readonly IMongoDatabase _mongoDatabase;
         private MongoClient Programme { get; }
