@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EngineTests.Base;
 using EngineTests.Base.Model;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EngineTests.Database
@@ -137,13 +136,56 @@ namespace EngineTests.Database
         [TestMethod()]
         public void GetEntityWithForeignKeyTest()
         {
-            Assert.Fail();
+            using var context = ContextFactoryTest.MakeContext();
+            var myEntity = new MyEntity
+            {
+                Numeric = 5,
+                DateTime = DateTime.Now.ToLocalTime(),
+                Name = "MyEntity"
+            };
+            context.Insert(myEntity);
+
+            var entityContainForeignKey = new EntityContainForeignKey
+            {
+                MyEntityId = myEntity.Id,
+                Data = "EntityContainForeignKey"
+            };
+
+            context.GetEntityWithForeignKey<EntityContainForeignKey>(entityContainForeignKey);
+            
+            Assert.AreEqual(myEntity.DateTime.ToString(), entityContainForeignKey.MyEntity?.DateTime.ToLocalTime().ToString());
+            Assert.AreEqual(myEntity.Name, entityContainForeignKey.MyEntity?.Name);
+            Assert.AreEqual(myEntity.Id, entityContainForeignKey.MyEntity?.Id);
         }
 
         [TestMethod()]
         public void GetCollectionEntityTest()
         {
-            Assert.Fail();
+            using var context = ContextFactoryTest.MakeContext(); 
+
+            var entityContainManyEntity = new EntityContainManyEntity
+            {
+                Data = "Parent",
+            };
+            context.Insert(entityContainManyEntity);
+
+            var listEntityContainForeignKey = new List<EntityContainForeignKey>(); 
+            for (var i = 0; i < 10; i++)
+            {
+                var entityContainForeignKey = new EntityContainForeignKey
+                {
+                    EntityContainManyEntityId = entityContainManyEntity.Id, 
+                    Data = i.ToString()
+                };
+                listEntityContainForeignKey.Add(entityContainForeignKey);
+            }
+            context.InsertAll(listEntityContainForeignKey);
+
+            context.GetCollectionEntity<EntityContainManyEntity>(entityContainManyEntity); 
+
+            Assert.AreEqual(10, entityContainManyEntity.CollectionOfEntityContainForeignKeys.Count);
+
+
         }
     }
 }
