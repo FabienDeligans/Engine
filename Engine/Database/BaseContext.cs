@@ -12,14 +12,14 @@ namespace Engine.Database
     public class BaseContext : IDisposable
     {
         private readonly IMongoDatabase _mongoDatabase;
-        private MongoClient Programme { get; }
-        private string DatabaseName { get; }
+        private MongoClient _mongoClient { get; }
+        private string _databaseName { get; }
 
         public BaseContext(string connectionString, string database)
         {
-            DatabaseName = database;
-            Programme = new MongoClient(connectionString);
-            _mongoDatabase = Programme.GetDatabase(database);
+            _databaseName = database;
+            _mongoClient = new MongoClient(connectionString);
+            _mongoDatabase = _mongoClient.GetDatabase(database);
         }
 
         private IMongoCollection<T> Collection<T>() where T : IEntity => _mongoDatabase.GetCollection<T>(typeof(T).Name);
@@ -28,7 +28,7 @@ namespace Engine.Database
         {
         }
 
-        public void DropDatabase() => Programme.DropDatabase(DatabaseName);
+        public void DropDatabase() => _mongoClient.DropDatabase(_databaseName);
 
         public void DropCollection<T>() where T : IEntity => _mongoDatabase.DropCollection(typeof(T).Name);
 
