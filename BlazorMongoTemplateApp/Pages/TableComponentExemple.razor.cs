@@ -15,8 +15,8 @@ namespace BlazorMongoTemplateApp.Pages
     public partial class TableComponentExemple
     {
         private TableComponent<MyEntity> ChildComponent { get; set; }
-
         private int Number { get; set; }
+        public List<MyEntity> CustomList { get; set; }
 
         private void Generate()
         {
@@ -51,6 +51,18 @@ namespace BlazorMongoTemplateApp.Pages
             Context = ContextFactory.MakeContext();
             await InitSignalR();
         }
+
+        public void CreateCustomList()
+        {
+            CustomList = new List<MyEntity>();
+            for (var i = 0; i < 15; i++)
+            {
+                CustomList.Add(new MyEntity {Numeric = new Random().Next(0, 11)}); 
+            }
+            ChildComponent.Init(); 
+            InvokeAsync(StateHasChanged);
+        }
+
 
         private async Task Drop()
         {

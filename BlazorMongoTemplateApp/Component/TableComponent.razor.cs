@@ -15,8 +15,10 @@ namespace BlazorMongoTemplateApp.Component
         [Parameter]
         public RenderFragment<T> RowTemplate { get; set; }
 
-        [Parameter]
-        public IEnumerable<T> Items { get; set; }
+        private IEnumerable<T> Items { get; set; }
+
+        [Parameter] 
+        public IEnumerable<T> CustomItems { get; set; } = new List<T>();
 
         [Parameter]
         public Func<T, string> GetFilterableText { get; set; }
@@ -26,10 +28,15 @@ namespace BlazorMongoTemplateApp.Component
 
         protected override void OnInitialized()
         {
-            if (Items is not null) return;
-
-            using var context = ContextFactory.MakeContext();
-            Items = context.QueryCollection<T>();
+            if (CustomItems is null)
+            {
+                using var context = ContextFactory.MakeContext();
+                Items = context.QueryCollection<T>();
+            }
+            else
+            {
+                Items = CustomItems;
+            }
         }
 
         private static readonly Func<T, string> DefaultGetFilterableText = item => item?.ToString() ?? "";
@@ -64,8 +71,15 @@ namespace BlazorMongoTemplateApp.Component
 
         public void Sort(string property)
         {
-            using var context = ContextFactory.MakeContext();
-            Items = context.QueryCollection<T>();
+            if (CustomItems is not null)
+            {
+                Items = CustomItems;
+            }
+            else
+            {
+                using var context = ContextFactory.MakeContext();
+                Items = context.QueryCollection<T>();
+            }
 
             Items = SortByAscending ?
                 Items.OrderBy(v => v.GetType().GetProperty(property)?.GetValue(v)) :
@@ -141,5 +155,10 @@ namespace BlazorMongoTemplateApp.Component
             OnInitialized();
         }
 
+        public void Init()
+        {
+            OnInitialized();
+            InvokeAsync(StateHasChanged); 
+        }
     }
 }
