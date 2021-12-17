@@ -1,0 +1,63 @@
+﻿@using System.Reflection
+@typeparam T
+
+<div class="container-fluid">
+    <div class="row">
+        <input class="form-control col-3" @bind="_filter" @oninput="FilterItems" />
+        <button class="btn btn-info" @onclick="Clear">Clear</button>
+@*        <button class="btn bg-light" disabled="disabled">@Items.Count() Datas</button>
+*@    </div>
+</div>
+
+<br />
+
+<table class="table table-hover table-sm">
+    <thead>
+        <tr>@TableHeader</tr>
+    </thead>
+    <tbody>
+        @foreach (var item in GetPage())
+        {
+            <tr>@RowTemplate(item)</tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <button class="bi bi-chevron-double-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(1)"></button>
+        </li>
+        <li class="page-item">
+            <button class="bi bi-chevron-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(Index)"></button>
+        </li>
+        @foreach (var numPage in Pages)
+        {
+            <li class="page-item">
+                <button class="btn @(Index + 1 == numPage ? "btn-info" : "btn-light")" @onclick="() => ChangePage(numPage)">@(numPage)</button>
+            </li>
+        }
+        <li class="page-item">
+            <button class="bi bi-chevron-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(Index+2)"></button>
+        </li>
+        <li class="page-item">
+            <button class="bi bi-chevron-double-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(NbPage+2)"></button>
+        </li>
+    </ul>
+</nav>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <button class="btn @(PageSize == 5 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(5)">5</button>
+        </li>
+        <li class="page-item">
+            <button class="btn @(PageSize == 10 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(10)">10</button>
+        </li>
+        <li class="page-item">
+            <button class="btn @(PageSize == 20 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(20)">20</button>
+        </li>
+        <li class="page-item">
+            <button class="btn btn-light" disabled="">Par pages</button>
+        </li>
+    </ul>
+</nav>
