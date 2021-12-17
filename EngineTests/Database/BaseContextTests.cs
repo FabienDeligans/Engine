@@ -62,7 +62,7 @@ namespace EngineTests.Database
             var data = datas.FirstOrDefault(v => v.Numeric == 0);
 
             // GetEntity(string id) TEST
-            Assert.AreEqual(data.Numeric, context.GetEntity<MyEntity>(data.Id).Numeric);
+            Assert.AreEqual(data?.Numeric, context.GetEntity<MyEntity>(data?.Id).Numeric);
 
             Assert.AreEqual(100, context.QueryCollection<MyEntity>().Count());
 
@@ -183,7 +183,7 @@ namespace EngineTests.Database
 
             context.GetCollectionEntity<EntityContainManyEntity>(entityContainManyEntity); 
 
-            Assert.AreEqual(10, entityContainManyEntity.CollectionOfEntityContainForeignKeys.Count);
+            Assert.AreEqual(10, entityContainManyEntity.CollectionOfEntityContainForeignKeys!.Count);
 
 
         }

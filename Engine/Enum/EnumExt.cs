@@ -23,13 +23,9 @@ namespace Engine.Enum
         /// <returns></returns>
         public static string GetName(this System.Enum enum1)
         {
-            FieldInfo field = enum1.GetType().GetField(enum1.ToString());
+            var field = enum1.GetType().GetField(enum1.ToString());
 
-            DescriptionAttribute attribute
-                = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
-                    as DescriptionAttribute;
-
-            return attribute == null ? enum1.ToString() : attribute.Description;
+            return Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is not DescriptionAttribute attribute ? enum1.ToString() : attribute.Description;
         }
     }
 }

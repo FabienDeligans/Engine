@@ -12,14 +12,14 @@ namespace Engine.Database
     public class BaseContext : IDisposable
     {
         private readonly IMongoDatabase _mongoDatabase;
-        private MongoClient _mongoClient { get; }
-        private string _databaseName { get; }
+        private MongoClient MongoClient { get; }
+        private string DatabaseName { get; }
 
         public BaseContext(string connectionString, string database)
         {
-            _databaseName = database;
-            _mongoClient = new MongoClient(connectionString);
-            _mongoDatabase = _mongoClient.GetDatabase(database);
+            DatabaseName = database;
+            MongoClient = new MongoClient(connectionString);
+            _mongoDatabase = MongoClient.GetDatabase(database);
         }
 
         private IMongoCollection<T> Collection<T>() where T : IEntity => _mongoDatabase.GetCollection<T>(typeof(T).Name);
@@ -28,7 +28,7 @@ namespace Engine.Database
         {
         }
 
-        public void DropDatabase() => _mongoClient.DropDatabase(_databaseName);
+        public void DropDatabase() => MongoClient.DropDatabase(DatabaseName);
 
         public void DropCollection<T>() where T : IEntity => _mongoDatabase.DropCollection(typeof(T).Name);
 
@@ -140,7 +140,7 @@ namespace Engine.Database
                 var attributes = propertyInfo.GetCustomAttributes(true);
                 foreach (var attribute in attributes)
                 {
-                    if (!(attribute is ForeignKeyAttribute fkAttribute)) continue;
+                    if (attribute is not ForeignKeyAttribute fkAttribute) continue;
                     var typeOfForeignKey = fkAttribute.TheType;
                     var valueOfForeignKey = propertyInfo.GetValue(entity);
 
@@ -179,7 +179,7 @@ namespace Engine.Database
                 var typeOfIEnumerable = propertyInfo.PropertyType.GenericTypeArguments;
                 var methodInfo = this.GetType().GetMethods().First(v => v.Name == (nameof(QueryCollection)) && v.GetParameters().Length == 0);
                 var genericMethod = methodInfo.MakeGenericMethod(typeOfIEnumerable);
-                var queryResult = genericMethod?.Invoke(this, new object[] { });
+                var queryResult = genericMethod?.Invoke(this, Array.Empty<object>());
                 if (queryResult == null) continue;
 
                 var result = Activator.CreateInstance(typeof(List<>).MakeGenericType(typeOfIEnumerable));
