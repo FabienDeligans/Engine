@@ -12,7 +12,7 @@ namespace BlazorMongoTemplateApp.Pages
     // TODO inherit from SignalRDataList<T> in .razor file
     // When Initialize override "Context" and "DataList"
     // run await InitSignalR()
-    public partial class SignalRExemple
+    public partial class TableComponentExemple
     {
         private TableComponent<MyEntity> ChildComponent { get; set; }
 
