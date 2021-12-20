@@ -5,6 +5,7 @@ using Engine.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BlazorMongoTemplateApp.Pages
@@ -52,14 +53,19 @@ namespace BlazorMongoTemplateApp.Pages
             await InitSignalR();
         }
 
-        public void CreateCustomList()
+        public void WithCustomListOrNot()
         {
-            CustomList = new List<MyEntity>();
-            for (var i = 0; i < 15; i++)
+            if (!CustomList.Any())
             {
-                CustomList.Add(new MyEntity {Numeric = new Random().Next(0, 11)}); 
+                CustomList = new List<MyEntity>();
+                for (var i = 0; i < 15; i++)
+                {
+                    CustomList.Add(new MyEntity { Numeric = new Random().Next(0, 11), Now = DateTime.Now});
+                    Thread.Sleep(1000);
+                }
             }
-            ChildComponent.Init(); 
+
+            ChildComponent.Init();
             InvokeAsync(StateHasChanged);
         }
 

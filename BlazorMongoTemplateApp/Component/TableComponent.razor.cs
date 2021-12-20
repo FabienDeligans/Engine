@@ -18,7 +18,7 @@ namespace BlazorMongoTemplateApp.Component
         private IEnumerable<T> Items { get; set; }
 
         [Parameter] 
-        public IEnumerable<T> CustomItems { get; set; } = new List<T>();
+        public IEnumerable<T> CustomItems { get; set; }
 
         [Parameter]
         public Func<T, string> GetFilterableText { get; set; }
@@ -28,7 +28,7 @@ namespace BlazorMongoTemplateApp.Component
 
         protected override void OnInitialized()
         {
-            if (CustomItems is null)
+            if (!CustomItems.Any())
             {
                 using var context = ContextFactory.MakeContext();
                 Items = context.QueryCollection<T>();
@@ -71,7 +71,7 @@ namespace BlazorMongoTemplateApp.Component
 
         public void Sort(string property)
         {
-            if (CustomItems is not null)
+            if (CustomItems.Any())
             {
                 Items = CustomItems;
             }
