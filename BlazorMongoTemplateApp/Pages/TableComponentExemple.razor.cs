@@ -19,7 +19,7 @@ namespace BlazorMongoTemplateApp.Pages
         private int Number { get; set; }
         public List<MyEntity> CustomList { get; set; }
 
-        private void Generate()
+        private async Task Generate()
         {
             using var context = ContextFactory.MakeContext();
 
@@ -35,7 +35,8 @@ namespace BlazorMongoTemplateApp.Pages
                 list.Add(myEntity);
             }
             context.InsertAll(list);
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
+            await OnInitializedAsync(); 
         }
 
         private static readonly Random Random = new();
@@ -51,22 +52,6 @@ namespace BlazorMongoTemplateApp.Pages
         {
             Context = ContextFactory.MakeContext();
             await InitSignalR();
-        }
-
-        public void WithCustomListOrNot()
-        {
-            if (!CustomList.Any())
-            {
-                CustomList = new List<MyEntity>();
-                for (var i = 0; i < 15; i++)
-                {
-                    CustomList.Add(new MyEntity { Numeric = new Random().Next(0, 11), Now = DateTime.Now});
-                    Thread.Sleep(1000);
-                }
-            }
-
-            ChildComponent.Init();
-            InvokeAsync(StateHasChanged);
         }
 
 

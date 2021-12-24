@@ -17,12 +17,10 @@
 
 <br />
 <br />
-<button class="btn btn-info" @onclick="WithCustomListOrNot">With Custom List or Not</button>
 
 @if (DataList.Count != 0)
 {
     <TableComponent T="MyEntity"
-                    CustomItems="CustomList"
                 GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
                 @ref="ChildComponent">
         <TableHeader>
