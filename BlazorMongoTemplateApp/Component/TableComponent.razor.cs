@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Engine.Database;
 
 namespace BlazorMongoTemplateApp.Component
 {
-    public partial class TableComponent<T> where T : IEntity
+    public partial class TableComponent<T> 
     {
         [Parameter]
         public RenderFragment TableHeader { get; set; }
@@ -17,8 +18,8 @@ namespace BlazorMongoTemplateApp.Component
 
         private IEnumerable<T> Items { get; set; }
 
-        [Parameter] 
-        public IEnumerable<T> CustomItems { get; set; } = new List<T>(); 
+        [Parameter]
+        public IEnumerable<T> CustomItems { get; set; }
 
         [Parameter]
         public Func<T, string> GetFilterableText { get; set; }
@@ -28,15 +29,26 @@ namespace BlazorMongoTemplateApp.Component
 
         protected override void OnInitialized()
         {
-            if (CustomItems.Count() == 0)
+            if (CustomItems == null)
             {
-                using var context = ContextFactory.MakeContext();
-                Items = context.QueryCollection<T>();
+                Items = GetItemsByReflextion();
             }
             else
             {
                 Items = CustomItems;
             }
+        }
+
+        private List<T> GetItemsByReflextion()
+        {
+            using var context = ContextFactory.MakeContext(); 
+
+            var methodInfo = typeof(BaseContext).GetMethods().FirstOrDefault(v =>
+                v.Name == nameof(BaseContext.QueryCollection) && v.GetParameters().Length == 0);
+            var genericMethod = methodInfo.MakeGenericMethod(typeof(T));
+            var result = (IEnumerable<T>) genericMethod.Invoke(context, Array.Empty<object>());
+
+            return result.ToList(); 
         }
 
         private static readonly Func<T, string> DefaultGetFilterableText = item => item?.ToString() ?? "";
@@ -71,14 +83,14 @@ namespace BlazorMongoTemplateApp.Component
 
         public void Sort(string property)
         {
-            if (CustomItems.Count()>0)
+            if (CustomItems == null)
             {
-                Items = CustomItems;
+                // using var context = ContextFactory.MakeContext();
+                Items = GetItemsByReflextion();
             }
             else
             {
-                using var context = ContextFactory.MakeContext();
-                Items = context.QueryCollection<T>();
+                Items = CustomItems;
             }
 
             Items = SortByAscending ?
@@ -155,10 +167,6 @@ namespace BlazorMongoTemplateApp.Component
             OnInitialized();
         }
 
-        public void Init()
-        {
-            OnInitialized();
-            InvokeAsync(StateHasChanged); 
-        }
+
     }
 }

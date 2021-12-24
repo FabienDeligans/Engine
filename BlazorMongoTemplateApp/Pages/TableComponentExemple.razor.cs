@@ -16,8 +16,16 @@ namespace BlazorMongoTemplateApp.Pages
     public partial class TableComponentExemple
     {
         private TableComponent<MyEntity> ChildComponent { get; set; }
+        private TableComponent<Truc> ChildComponentTruc { get; set; }
         private int Number { get; set; }
-        public List<MyEntity> CustomList { get; set; }
+        public List<Truc> CustomList { get; set; }
+        public bool BoolCustomList { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Context = ContextFactory.MakeContext();
+            await InitSignalR();
+        }
 
         private async Task Generate()
         {
@@ -36,7 +44,7 @@ namespace BlazorMongoTemplateApp.Pages
             }
             context.InsertAll(list);
             await InvokeAsync(StateHasChanged);
-            await OnInitializedAsync(); 
+            await OnInitializedAsync();
         }
 
         private static readonly Random Random = new();
@@ -47,13 +55,6 @@ namespace BlazorMongoTemplateApp.Pages
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
-
-        protected override async Task OnInitializedAsync()
-        {
-            Context = ContextFactory.MakeContext();
-            await InitSignalR();
-        }
-
 
         private async Task Drop()
         {
@@ -93,5 +94,29 @@ namespace BlazorMongoTemplateApp.Pages
             await RefreshSignalR(entity, Crud.Delete);
         }
 
+        private void WithCustomList()
+        {
+            BoolCustomList = !BoolCustomList; 
+            if (BoolCustomList)
+            {
+                CustomList = new List<Truc>();
+                for (int i = 0; i < 500; i++)
+                {
+                    CustomList.Add(new Truc()
+                    {
+                        Nombre = new Random().Next(0, 11),
+                        Name = RandomString(10),
+                    });
+                }
+            }
+
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public class Truc
+    {
+        public string Name { get; set; }
+        public int Nombre { get; set; }
     }
 }
