@@ -57,7 +57,7 @@ namespace Engine.Hubs
                     default:
                         throw new ArgumentOutOfRangeException(nameof(crud), crud, null);
                 }
-                StateHasChanged();
+                InvokeAsync(StateHasChanged);
             });
             await DataHubConnection.StartAsync();
         }

@@ -16,10 +16,7 @@ namespace BlazorMongoTemplateApp.Pages
     public partial class TableComponentExemple
     {
         private TableComponent<MyEntity> ChildComponent { get; set; }
-        private TableComponent<Truc> ChildComponentTruc { get; set; }
         private int Number { get; set; }
-        public List<Truc> CustomList { get; set; }
-        public bool BoolCustomList { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -94,29 +91,5 @@ namespace BlazorMongoTemplateApp.Pages
             await RefreshSignalR(entity, Crud.Delete);
         }
 
-        private void WithCustomList()
-        {
-            BoolCustomList = !BoolCustomList; 
-            if (BoolCustomList)
-            {
-                CustomList = new List<Truc>();
-                for (int i = 0; i < 500; i++)
-                {
-                    CustomList.Add(new Truc()
-                    {
-                        Nombre = new Random().Next(0, 11),
-                        Name = RandomString(10),
-                    });
-                }
-            }
-
-            InvokeAsync(StateHasChanged);
-        }
-    }
-
-    public class Truc
-    {
-        public string Name { get; set; }
-        public int Nombre { get; set; }
     }
 }

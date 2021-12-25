@@ -29,14 +29,7 @@ namespace BlazorMongoTemplateApp.Component
 
         protected override void OnInitialized()
         {
-            if (CustomItems == null)
-            {
-                Items = GetItemsByReflextion();
-            }
-            else
-            {
-                Items = CustomItems;
-            }
+            Items = CustomItems ?? GetItemsByReflextion();
         }
 
         private List<T> GetItemsByReflextion()
@@ -45,10 +38,10 @@ namespace BlazorMongoTemplateApp.Component
 
             var methodInfo = typeof(BaseContext).GetMethods().FirstOrDefault(v =>
                 v.Name == nameof(BaseContext.QueryCollection) && v.GetParameters().Length == 0);
-            var genericMethod = methodInfo.MakeGenericMethod(typeof(T));
-            var result = (IEnumerable<T>) genericMethod.Invoke(context, Array.Empty<object>());
+            var genericMethod = methodInfo?.MakeGenericMethod(typeof(T));
+            var result = (IEnumerable<T>) genericMethod?.Invoke(context, Array.Empty<object>());
 
-            return result.ToList(); 
+            return result?.ToList(); 
         }
 
         private static readonly Func<T, string> DefaultGetFilterableText = item => item?.ToString() ?? "";
@@ -83,15 +76,7 @@ namespace BlazorMongoTemplateApp.Component
 
         public void Sort(string property)
         {
-            if (CustomItems == null)
-            {
-                // using var context = ContextFactory.MakeContext();
-                Items = GetItemsByReflextion();
-            }
-            else
-            {
-                Items = CustomItems;
-            }
+            Items = CustomItems ?? GetItemsByReflextion();
 
             Items = SortByAscending ?
                 Items.OrderBy(v => v.GetType().GetProperty(property)?.GetValue(v)) :

@@ -18,73 +18,45 @@
 <br />
 <br />
 
-<button class="btn btn-info" @onclick="WithCustomList">Bool CustomList is @BoolCustomList</button>
-
-@if (!BoolCustomList)
-{
     @if (DataList.Count != 0)
-    {
-        <TableComponent T="MyEntity"
+{
+    <TableComponent T="MyEntity"
+                CustomItems="DataList"
                 GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
                 @ref="ChildComponent">
-            <TableHeader>
-                <th>
-                    <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))">
-                        <b>Id</b>
-                    </button>
-                </th>
-                <th>
-                    <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.IsDisabled)))">
-                        <b>Is Disabled</b>
-                    </button>
-                </th>
-                <th>
-                    <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Numeric)))">
-                        <b>Numeric</b>
-                    </button>
-                </th>
-                <th>
-                    <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Data)))">
-                        <b>Data</b>
-                    </button>
-                </th>
-                <th>
-                    <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Now)))">
-                        <b>Now</b>
-                    </button>
-                </th>
-            </TableHeader>
-            <RowTemplate>
-                <td>@context.Id</td>
-                <td>@context.IsDisabled</td>
-                <td>@context.Numeric</td>
-                <td>@context.Data</td>
-                <td>@context.Now</td>
-            </RowTemplate>
-        </TableComponent>
-    }
-}
-else
-{
-    <TableComponent T="Truc"
-                CustomItems="CustomList"
-                GetFilterableText=@(item => $"{item.Name} {item.Nombre}")
-                @ref="ChildComponentTruc">
         <TableHeader>
             <th>
-                <button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Name)))">
-                    <b>Name</b>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))">
+                    <b>Id</b>
                 </button>
             </th>
             <th>
-                <button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Nombre)))">
-                    <b>Nombre</b>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.IsDisabled)))">
+                    <b>Is Disabled</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Numeric)))">
+                    <b>Numeric</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Data)))">
+                    <b>Data</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Now)))">
+                    <b>Now</b>
                 </button>
             </th>
         </TableHeader>
         <RowTemplate>
-            <td>@context.Name</td>
-            <td>@context.Nombre</td>
+            <td>@context.Id</td>
+            <td>@context.IsDisabled</td>
+            <td>@context.Numeric</td>
+            <td>@context.Data</td>
+            <td>@context.Now</td>
         </RowTemplate>
     </TableComponent>
 }
