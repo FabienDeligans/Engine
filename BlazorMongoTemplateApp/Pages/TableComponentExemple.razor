@@ -7,16 +7,8 @@
                 GetFilterableText=@(item => $"{item.Name} {item.Nombre}")
                 @ref="ChildComponentTruc">
     <TableHeader>
-        <th>
-            <button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Name)))">
-                <b>Name</b>
-            </button>
-        </th>
-        <th>
-            <button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Nombre)))">
-                <b>Nombre</b>
-            </button>
-        </th>
+        <th><button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Name)))"><b>Name</b></button></th>
+        <th><button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Nombre)))"><b>Nombre</b></button></th>
     </TableHeader>
     <RowTemplate>
         <td>@context.Name</td>

@@ -1,5 +1,6 @@
 ﻿using Engine.Model;
 using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BlazorMongoTemplateApp.Models
 {
@@ -10,6 +11,8 @@ namespace BlazorMongoTemplateApp.Models
     {
         public int Numeric { get; set; }
         public string Data { get; set; }
+        
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Now { get; set; }
     }
 }
