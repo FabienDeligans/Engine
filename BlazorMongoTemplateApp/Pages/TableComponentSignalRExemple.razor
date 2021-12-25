@@ -1,0 +1,66 @@
+﻿@page "/TableComponentSignalRExemple"
+@inherits SignalRDataList<MyEntity>
+
+<h3>TableComponent & SignalRDataList Exemple</h3>
+<h4>Save Crud operations in database</h4>
+@DataList.Count
+<br />
+
+<div class="container-fluid">
+    <div class="row">
+        <button class="btn btn-info" @onclick="Add">Create new MyEntity</button>
+        <button class="btn btn-info" @onclick="Drop">Drop Database</button>
+        <input type="number" class="form-control col-3" @bind="Number" />
+        <button class="btn btn-info" @onclick="Generate">Generate</button>
+    </div>
+</div>
+
+<br />
+<br />
+
+@if (DataList.Count != 0)
+{
+    <TableComponent T="MyEntity"
+                CustomItems="DataList"
+                GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
+                @ref="ChildComponent">
+        <TableHeader>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))">
+                    <b>Id</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.IsDisabled)))">
+                    <b>Is Disabled</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Numeric)))">
+                    <b>Numeric</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Data)))">
+                    <b>Data</b>
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Now)))">
+                    <b>Now</b>
+                </button>
+            </th>
+            <th>Update</th>
+            <th>Delete</th>
+        </TableHeader>
+        <RowTemplate>
+            <td class="align-middle">@context.Id</td>
+            <td class="align-middle"><input @bind="@context.IsDisabled" type="checkbox" class="form-check" /></td>
+            <td class="align-middle"><input @bind="@context.Numeric" type="number" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><input @bind="@context.Data" type="text" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><input @bind="@context.Now" type="date" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><button class="btn btn-warning btn-sm" @onclick="() => Update(context)">Update</button></td>
+            <td class="align-middle"><button class="btn btn-danger btn-sm" @onclick="() => Delete(context)">Delete</button></td>
+        </RowTemplate>
+    </TableComponent>
+}

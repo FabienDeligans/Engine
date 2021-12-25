@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "Engine\Engine.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EngineTests", "EngineTests\EngineTests.csproj", "{52F7354E-FA98-4246-A4F5-4E6223DFBD90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMongoTemplateApp", "BlazorMongoTemplateApp\BlazorMongoTemplateApp.csproj", "{1674902A-4B8D-4DB6-BF03-D24139EF3813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMongoTemplateApp", "BlazorMongoTemplateApp\BlazorMongoTemplateApp.csproj", "{1674902A-4B8D-4DB6-BF03-D24139EF3813}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4D474836-163F-407B-8A64-DE355D6D8BD3} = {4D474836-163F-407B-8A64-DE355D6D8BD3}
 	EndProjectSection
