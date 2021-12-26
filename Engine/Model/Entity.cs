@@ -8,6 +8,8 @@ namespace Engine.Model
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonElement("isDisabled")]
         public bool IsDisabled { get; set; }
     }
 }

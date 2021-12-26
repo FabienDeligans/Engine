@@ -9,9 +9,13 @@ namespace BlazorMongoTemplateApp.Models
     /// </summary>
     public class MyEntity : Entity
     {
+        [BsonElement("numeric")]
         public int Numeric { get; set; }
-        public string Data { get; set; }
         
+        [BsonElement("data")]
+        public string Data { get; set; }
+
+        [BsonElement("now")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Now { get; set; }
     }
