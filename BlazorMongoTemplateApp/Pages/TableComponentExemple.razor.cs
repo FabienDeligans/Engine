@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BlazorMongoTemplateApp.Component;
+using BlazorMongoTemplateApp.Models;
 
 namespace BlazorMongoTemplateApp.Pages
 {
