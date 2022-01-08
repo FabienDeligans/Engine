@@ -1,4 +1,4 @@
-﻿namespace BlazorMongoTemplateApp.Pages
+﻿namespace BlazorMongoTemplateApp.Models
 {
     public class Truc
     {
