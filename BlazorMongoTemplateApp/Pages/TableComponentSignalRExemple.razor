@@ -30,16 +30,14 @@
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Numeric)))"><b>Numeric</b></button></th>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Data)))"><b>Data</b></button></th>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Now)))"><b>Now</b></button></th>
-            <th>Update</th>
             <th>Delete</th>
         </TableHeader>
         <RowTemplate>
             <td class="align-middle">@context.Id</td>
-            <td class="align-middle"><input @bind="@context.IsDisabled" type="checkbox" class="form-check" /></td>
-            <td class="align-middle"><input @bind="@context.Numeric" type="number" class="form-control form-control-sm" /></td>
-            <td class="align-middle"><input @bind="@context.Data" type="text" class="form-control form-control-sm" /></td>
-            <td class="align-middle"><input @bind="@context.Now" type="datetime-local" class="form-control form-control-sm" /></td>
-            <td class="align-middle"><button class="btn btn-warning btn-sm" @onclick="() => Update(context)">Update</button></td>
+            <td class="align-middle"><input @bind="@context.IsDisabled" @onfocusout="() => Update(context)" type="checkbox" class="form-check" /></td>
+            <td class="align-middle"><input @bind="@context.Numeric" @onfocusout="() => Update(context)" type="number" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><input @bind="@context.Data" @onfocusout="() => Update(context)" type="text" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><input @bind="@context.Now" @onfocusout="() => Update(context)" type="datetime-local" class="form-control form-control-sm" /></td>
             <td class="align-middle"><button class="btn btn-danger btn-sm" @onclick="() => Delete(context)">Delete</button></td>
         </RowTemplate>
     </TableComponent>
