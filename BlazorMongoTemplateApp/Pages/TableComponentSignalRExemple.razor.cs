@@ -14,6 +14,7 @@ namespace BlazorMongoTemplateApp.Pages
     // run await InitSignalR()
     public partial class TableComponentSignalRExemple
     {
+        // TODO not forget this to ref
         private TableComponent<MyEntity> ChildComponent { get; set; }
         private int Number { get; set; }
 
