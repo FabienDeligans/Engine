@@ -10,7 +10,7 @@ using BlazorMongoTemplateApp.Models;
 namespace BlazorMongoTemplateApp.Pages
 {
     // TODO inherit from SignalRDataList<T> in .razor file
-    // When Initialize override "Context" and "DataList"
+    // When Initialize override "Context" and 
     // run await InitSignalR()
     public partial class TableComponentSignalRExemple
     {
