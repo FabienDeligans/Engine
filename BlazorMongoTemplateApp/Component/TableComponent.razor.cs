@@ -8,7 +8,7 @@ using Engine.Database;
 
 namespace BlazorMongoTemplateApp.Component
 {
-    public partial class TableComponent<T> 
+    public partial class TableComponent<T>
     {
         [Parameter]
         public RenderFragment TableHeader { get; set; }
@@ -24,24 +24,21 @@ namespace BlazorMongoTemplateApp.Component
         [Parameter]
         public Func<T, string> GetFilterableText { get; set; }
 
+        [Parameter]
+        public bool Pagination { get; set; }
+
+        [Parameter]
+        public bool Search { get; set; }
+
+        public int Quantity { get; set; }
+
         private string _filter;
         private bool SortByAscending { get; set; }
 
         protected override void OnInitialized()
         {
-            Items = CustomItems ?? GetItemsByReflextion();
-        }
-
-        private List<T> GetItemsByReflextion()
-        {
-            using var context = ContextFactory.MakeContext(); 
-
-            var methodInfo = typeof(BaseContext).GetMethods().FirstOrDefault(v =>
-                v.Name == nameof(BaseContext.QueryCollection) && v.GetParameters().Length == 0);
-            var genericMethod = methodInfo?.MakeGenericMethod(typeof(T));
-            var result = (IEnumerable<T>) genericMethod?.Invoke(context, Array.Empty<object>());
-
-            return result?.ToList(); 
+            Items = CustomItems;
+            Quantity = Items.Count();
         }
 
         private static readonly Func<T, string> DefaultGetFilterableText = item => item?.ToString() ?? "";
@@ -64,27 +61,35 @@ namespace BlazorMongoTemplateApp.Component
                 Items = Items.AsEnumerable();
             }
 
+            Quantity = Items.Count();
+
             Index = 0;
             StateHasChanged();
         }
 
         private void Clear()
         {
+            Quantity = CustomItems.Count();
+
             _filter = "";
             StateHasChanged();
         }
 
         public void Sort(string property)
         {
-            Items = CustomItems ?? GetItemsByReflextion();
+            Items = CustomItems;
 
             Items = SortByAscending ?
                 Items.OrderBy(v => v.GetType().GetProperty(property)?.GetValue(v)) :
                 Items.OrderByDescending(v => v.GetType().GetProperty(property)?.GetValue(v));
 
             SortByAscending = !SortByAscending;
+
             StateHasChanged();
         }
+
+        [Parameter]
+        public bool PerPage { get; set; }
 
         [Parameter]
         public int PageSize { get; set; } = 10;
@@ -92,6 +97,8 @@ namespace BlazorMongoTemplateApp.Component
         private int Index { get; set; } = 0;
         private int Count { get; set; }
         private List<int> Pages { get; set; }
+        
+
 
         private void InitDataPagination()
         {
@@ -140,6 +147,7 @@ namespace BlazorMongoTemplateApp.Component
 
         private IEnumerable<T> GetPage()
         {
+            if (!Pagination) return Items;
             GenerateButton();
             return Items.Skip(Index * PageSize).Take(PageSize);
         }
