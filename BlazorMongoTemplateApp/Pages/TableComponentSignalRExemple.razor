@@ -31,6 +31,7 @@
                 CustomItems="DataList"
                 GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
                 Pagination="true"
+                Search="true"
                 @ref="ChildComponent">
         <TableHeader>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))"><b>Id</b></button></th>
