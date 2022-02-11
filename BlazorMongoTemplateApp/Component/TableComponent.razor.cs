@@ -1,10 +1,7 @@
-﻿using BlazorMongoTemplateApp.Database;
-using Engine.Model;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Engine.Database;
 
 namespace BlazorMongoTemplateApp.Component
 {
@@ -98,8 +95,6 @@ namespace BlazorMongoTemplateApp.Component
         private int Count { get; set; }
         private List<int> Pages { get; set; }
         
-
-
         private void InitDataPagination()
         {
             Count = Items.Count();
@@ -159,7 +154,5 @@ namespace BlazorMongoTemplateApp.Component
             Clear();
             OnInitialized();
         }
-
-
     }
 }
