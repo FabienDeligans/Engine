@@ -1,1 +1,39 @@
 ﻿@page "/"
+
+@if (Outillages.Any())
+{
+    <TableComponent T="Outillage"
+                CustomItems="Outillages"
+                GetFilterableText=@(v => $"{v.Libelle}")
+                Pagination="true"
+                PerPage="false"
+                Search="true"
+                @ref="ChildComponentOutillage">
+        <TableHeader>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Id)))"><b>Id</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Libelle)))"><b>Libelle</b></button></th>
+        </TableHeader>
+        <RowTemplate>
+            <td class="btn" @onclick="() => Display(context.Id)">@context.Id</td>
+            <td>@context.Libelle</td>
+        </RowTemplate>
+
+    </TableComponent>
+        @if (Open )
+        {
+        <TableComponent T="Exemplaire"
+                    Context="ex"
+                    CustomItems="Exemplaires.Where(v => v.OutillageId == id)">
+            <TableHeader>
+                <th>Exemplaire ID</th>
+                <th>Exemplaire Libelle</th>
+                <th>Outillage ID</th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@ex.Id</td>
+                <td>@ex.Libelle</td>
+                <td>@ex.OutillageId</td>
+            </RowTemplate>
+        </TableComponent>
+        }
+}
