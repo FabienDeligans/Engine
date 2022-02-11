@@ -2,38 +2,41 @@
 
 @if (Outillages.Any())
 {
-    <TableComponent T="Outillage"
-                CustomItems="Outillages"
-                GetFilterableText=@(v => $"{v.Libelle}")
-                Pagination="true"
-                PerPage="false"
-                Search="true"
-                @ref="ChildComponentOutillage">
+    <TableComponent CustomItems="Outillages"
+                    GetFilterableText=@(v => $"{v.Libelle}")
+                    Pagination="true"
+                    PerPage="true"
+                    PageSize="6"
+                    Search="true"
+                    Accordion="true"
+                    NbCol="3"
+                    @ref="ChildComponentOutillage">
         <TableHeader>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Id)))"><b>Id</b></button></th>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Libelle)))"><b>Libelle</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Nb)))"><b>Outillage Nb</b></button></th>
         </TableHeader>
         <RowTemplate>
-            <td class="btn" @onclick="() => Display(context.Id)">@context.Id</td>
+            <td>@context.Id</td>
             <td>@context.Libelle</td>
+            <td>@context.Nb + @Exemplaires.Where(v => v.OutillageId == context.Id).Sum(v => v.Nb)</td>
         </RowTemplate>
-
+        <RenderFragmentCollapse>
+            <TableComponent CustomItems="Exemplaires.Where(v => v.OutillageId == context.Id)"
+                            Context="ex">
+                <TableHeader>
+                    <th>Exemplaire Id</th>
+                    <th>Exemplaire Libelle</th>
+                    <th>Outillage ID</th>
+                    <th>Exemplaire NB</th>
+                </TableHeader>
+                <RowTemplate>
+                    <td>@ex.Id</td>
+                    <td>@ex.Libelle</td>
+                    <td>@ex.OutillageId</td>
+                    <td>@ex.Nb</td>
+                </RowTemplate>
+            </TableComponent>
+        </RenderFragmentCollapse>
     </TableComponent>
-        @if (Open )
-        {
-        <TableComponent T="Exemplaire"
-                    Context="ex"
-                    CustomItems="Exemplaires.Where(v => v.OutillageId == id)">
-            <TableHeader>
-                <th>Exemplaire ID</th>
-                <th>Exemplaire Libelle</th>
-                <th>Outillage ID</th>
-            </TableHeader>
-            <RowTemplate>
-                <td>@ex.Id</td>
-                <td>@ex.Libelle</td>
-                <td>@ex.OutillageId</td>
-            </RowTemplate>
-        </TableComponent>
-        }
 }

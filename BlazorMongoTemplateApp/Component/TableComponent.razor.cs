@@ -7,15 +7,16 @@ namespace BlazorMongoTemplateApp.Component
 {
     public partial class TableComponent<T>
     {
-        [Parameter]
+        [Parameter, EditorRequired]
         public RenderFragment TableHeader { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public RenderFragment<T> RowTemplate { get; set; }
 
-        private IEnumerable<T> Items { get; set; }
-
         [Parameter]
+        public RenderFragment<T> RenderFragmentCollapse { get; set; }
+
+        [Parameter, EditorRequired]
         public IEnumerable<T> CustomItems { get; set; }
 
         [Parameter]
@@ -25,26 +26,49 @@ namespace BlazorMongoTemplateApp.Component
         public bool Pagination { get; set; }
 
         [Parameter]
+        public bool PerPage { get; set; }
+
+        [Parameter]
+        public int PageSize { get; set; } = 10;
+
+        [Parameter]
         public bool Search { get; set; }
 
+        [Parameter]
+        public bool Accordion { get; set; }
+
+        [Parameter]
+        public int NbCol { get; set; }
+
+        private IEnumerable<T> Items { get; set; }
         public int Quantity { get; set; }
+        private bool SortByAscending { get; set; }
+        private int NbPage { get; set; }
+        private int Index { get; set; } = 0;
+        private int Count { get; set; }
+        private List<int> Pages { get; set; }
 
         private string _filter;
-        private bool SortByAscending { get; set; }
-
+        private T _item;
+        public bool Collapse;
+        
         protected override void OnInitialized()
         {
             Items = CustomItems;
             Quantity = Items.Count();
         }
-
-        private static readonly Func<T, string> DefaultGetFilterableText = item => item?.ToString() ?? "";
+        
+        public void Display(T item)
+        {
+            Collapse = !Collapse;
+            _item = item;
+            StateHasChanged();
+        }
 
         private void FilterItems(ChangeEventArgs obj)
         {
             _filter = obj.Value?.ToString();
-
-            var filterFunc = GetFilterableText ?? DefaultGetFilterableText;
+            var filterFunc = GetFilterableText;
 
             if (!string.IsNullOrEmpty(_filter))
             {
@@ -67,7 +91,6 @@ namespace BlazorMongoTemplateApp.Component
         private void Clear()
         {
             Quantity = CustomItems.Count();
-
             _filter = "";
             StateHasChanged();
         }
@@ -75,26 +98,13 @@ namespace BlazorMongoTemplateApp.Component
         public void Sort(string property)
         {
             Items = CustomItems;
-
             Items = SortByAscending ?
                 Items.OrderBy(v => v.GetType().GetProperty(property)?.GetValue(v)) :
                 Items.OrderByDescending(v => v.GetType().GetProperty(property)?.GetValue(v));
-
             SortByAscending = !SortByAscending;
-
             StateHasChanged();
         }
 
-        [Parameter]
-        public bool PerPage { get; set; }
-
-        [Parameter]
-        public int PageSize { get; set; } = 10;
-        private int NbPage { get; set; }
-        private int Index { get; set; } = 0;
-        private int Count { get; set; }
-        private List<int> Pages { get; set; }
-        
         private void InitDataPagination()
         {
             Count = Items.Count();

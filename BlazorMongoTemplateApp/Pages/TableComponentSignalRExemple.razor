@@ -27,12 +27,15 @@
 
 @if (DataList.Count != 0)
 {
-    <TableComponent T="MyEntity"
-                CustomItems="DataList"
-                GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
-                Pagination="true"
-                Search="true"
-                @ref="ChildComponent">
+    <TableComponent CustomItems="DataList"
+                    GetFilterableText=@(item => $"{item.Id} {item.IsDisabled} {item.Data} {item.Numeric} {item.Now}")
+                    Pagination="true"
+                    PerPage="true"
+                    PageSize="10"
+                    Search="true"
+                    Accordion="false"
+                    NbCol="0"
+                    @ref="ChildComponent">
         <TableHeader>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))"><b>Id</b></button></th>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.IsDisabled)))"><b>Is Disabled</b></button></th>
@@ -44,10 +47,10 @@
         </TableHeader>
         <RowTemplate>
             <td class="align-middle">@context.Id</td>
-            <td class="align-middle"><input @bind="@context.IsDisabled" type="checkbox" class="form-check" /></td>
-            <td class="align-middle"><input @bind="@context.Numeric" type="number" class="form-control form-control-sm" /></td>
-            <td class="align-middle"><input @bind="@context.Data" type="text" class="form-control form-control-sm" /></td>
-            <td class="align-middle"><input @bind="@context.Now" type="datetime-local" class="form-control form-control-sm" /></td>
+            <td class="align-middle"><input @bind="@context.IsDisabled" type="checkbox" class="form-check"/></td>
+            <td class="align-middle"><input @bind="@context.Numeric" type="number" class="form-control form-control-sm"/></td>
+            <td class="align-middle"><input @bind="@context.Data" type="text" class="form-control form-control-sm"/></td>
+            <td class="align-middle"><input @bind="@context.Now" type="datetime-local" class="form-control form-control-sm"/></td>
             <td class="align-middle"><button class="btn btn-warning btn-sm" @onclick="() => Update(context)">Update</button></td>
             <td class="align-middle"><button class="btn btn-danger btn-sm" @onclick="() => Delete(context)">Delete</button></td>
         </RowTemplate>

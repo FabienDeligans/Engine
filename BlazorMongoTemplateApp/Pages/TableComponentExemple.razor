@@ -2,10 +2,7 @@
 
 <h3>TableComponent Exemple</h3>
 
-<TableComponent T="Truc"
-                CustomItems="CustomList"
-                GetFilterableText=@(item => $"{item.Name} {item.Nombre}")
-                Pagination ="false"
+<TableComponent CustomItems="CustomList"
                 @ref="ChildComponentTruc">
     <TableHeader>
         <th><button class="btn btn-light" @onclick="@(() => ChildComponentTruc.Sort(nameof(Truc.Name)))"><b>Name</b></button></th>

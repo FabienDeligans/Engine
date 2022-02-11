@@ -7,6 +7,7 @@ namespace BlazorMongoTemplateApp.Models
     public class Exemplaire : Entity
     {
         public string Libelle { get; set; }
+        public int Nb { get; set; }
 
         [ForeignKey(typeof(Outillage))]
         public string OutillageId { get; set; }

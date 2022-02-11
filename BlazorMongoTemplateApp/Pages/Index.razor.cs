@@ -17,53 +17,49 @@ namespace BlazorMongoTemplateApp.Pages
 
         protected override void OnInitialized()
         {
-            using var context = ContextFactory.MakeContext(); 
+            using var context = ContextFactory.MakeContext();
+            context.DropDatabase();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var outillage = new Outillage
                 {
-                    Libelle = RandomString(10)
-                }; 
+                    Libelle = RandomString(10),
+                    Nb = new Random().Next(0, 11),
+                };
                 Outillages.Add(outillage);
-                context.Insert(outillage);
 
+            }
+            context.InsertAll(Outillages);
+            Outillages = new List<Outillage>();
+            Outillages = context.QueryCollection<Outillage>().ToList();
+
+            foreach (var outillage in Outillages)
+            {
                 for (int j = 0; j < 3; j++)
                 {
                     var exemplaire = new Exemplaire
                     {
                         OutillageId = outillage.Id,
-                        Libelle = RandomString(5)
+                        Libelle = RandomString(5),
+                        Nb = new Random().Next(0, 11),
                     };
                     Exemplaires.Add(exemplaire);
-                    context.Insert(exemplaire);
                 }
             }
+
+            context.InsertAll(Exemplaires);
+            Exemplaires = new List<Exemplaire>();
+            Exemplaires = context.QueryCollection<Exemplaire>().ToList(); 
+
         }
 
         private static readonly Random Random = new();
-
         private static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
-
-        private List<Exemplaire> GetExemplaire(string contextId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Open;
-
-
-        private void Display(string contextId)
-        {
-            Open = !Open;
-            id = contextId; 
-        }
-
-        public string id; 
     }
 }
