@@ -25,38 +25,8 @@ namespace BlazorMongoTemplateApp.Pages
         private void Init()
         {
             using var context = ContextFactory.MakeContext();
-            context.DropCollection<Outillage>();
-            context.DropCollection<Exemplaire>();
-
-            var outillages = new List<Outillage>(); 
-            var exemplaires = new List<Exemplaire>();
-
-            for (int i = 0; i < 100_000; i++)
-            {
-                var outillage = new Outillage
-                {
-                    Libelle = RandomString(5),
-                    Nb = new Random().Next(0, 11),
-                }; 
-                outillages.Add(outillage);
-            }
-            context.InsertAll(outillages);
+            
             Outillages = context.QueryCollection<Outillage>().ToList();
-
-            foreach (var outillage in Outillages)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    var exemplaire = new Exemplaire
-                    {
-                        OutillageId = outillage.Id, 
-                        Libelle = RandomString(10),
-                        Nb = new Random().Next(0, 11),
-                    };
-                    exemplaires.Add(exemplaire);
-                }
-            }
-            context.InsertAll(exemplaires);
             Exemplaires = context.QueryCollection<Exemplaire>().ToList();
         }
 

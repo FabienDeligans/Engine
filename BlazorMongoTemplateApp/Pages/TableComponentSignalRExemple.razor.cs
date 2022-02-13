@@ -55,7 +55,7 @@ namespace BlazorMongoTemplateApp.Pages
         private async Task Drop()
         {
             using var context = ContextFactory.MakeContext();
-            context.DropDatabase();
+            context.DropCollection<MyEntity>();
 
             await RefreshSignalR(null, Crud.Read);
         }
