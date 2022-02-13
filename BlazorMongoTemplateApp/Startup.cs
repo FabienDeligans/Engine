@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Blazored.Modal;
 
 
 namespace BlazorMongoTemplateApp
@@ -25,6 +26,7 @@ namespace BlazorMongoTemplateApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazoredModal();
 
             services.AddResponseCompression(opts =>
             {

@@ -3,55 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorMongoTemplateApp.Component;
+using BlazorMongoTemplateApp.Component.Modal.Caller;
 using BlazorMongoTemplateApp.Database;
 using BlazorMongoTemplateApp.Models;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorMongoTemplateApp.Pages
 {
-    public partial class Index
+    public partial class Index : ModalComponentCaller
     {
         public List<Outillage> Outillages { get; set; } = new List<Outillage>();
         public List<Exemplaire> Exemplaires { get; set; } = new List<Exemplaire>();
         public TableComponent<Outillage> ChildComponentOutillage { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
+        {
+            await Task.Run(Init); 
+        }
+
+        private void Init()
         {
             using var context = ContextFactory.MakeContext();
             context.DropDatabase();
 
-            for (int i = 0; i < 1000; i++)
+            var outillages = new List<Outillage>(); 
+            var exemplaires = new List<Exemplaire>();
+
+            for (int i = 0; i < 100_000; i++)
             {
                 var outillage = new Outillage
                 {
-                    Libelle = RandomString(10),
+                    Libelle = RandomString(5),
                     Nb = new Random().Next(0, 11),
-                };
-                Outillages.Add(outillage);
-
+                }; 
+                outillages.Add(outillage);
             }
-            context.InsertAll(Outillages);
-            Outillages = new List<Outillage>();
+            context.InsertAll(outillages);
             Outillages = context.QueryCollection<Outillage>().ToList();
 
             foreach (var outillage in Outillages)
             {
-                for (int j = 0; j < 3; j++)
+                for (int i = 0; i < 3; i++)
                 {
                     var exemplaire = new Exemplaire
                     {
-                        OutillageId = outillage.Id,
-                        Libelle = RandomString(5),
+                        OutillageId = outillage.Id, 
+                        Libelle = RandomString(10),
                         Nb = new Random().Next(0, 11),
                     };
-                    Exemplaires.Add(exemplaire);
+                    exemplaires.Add(exemplaire);
                 }
             }
-
-            context.InsertAll(Exemplaires);
-            Exemplaires = new List<Exemplaire>();
-            Exemplaires = context.QueryCollection<Exemplaire>().ToList(); 
-
+            context.InsertAll(exemplaires);
+            Exemplaires = context.QueryCollection<Exemplaire>().ToList();
         }
 
         private static readonly Random Random = new();
@@ -61,5 +64,6 @@ namespace BlazorMongoTemplateApp.Pages
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
+       
     }
 }

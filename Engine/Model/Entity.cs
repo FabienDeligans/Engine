@@ -11,6 +11,5 @@ namespace Engine.Model
 
         [BsonElement("isDisabled")]
         public bool IsDisabled { get; set; }
-
     }
 }

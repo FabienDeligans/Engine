@@ -1,16 +1,18 @@
 ﻿@page "/"
+@using BlazorMongoTemplateApp.Pages.Modal
+@inherits BlazorMongoTemplateApp.Component.Modal.Caller.ModalComponentCaller
 
 @if (Outillages.Any())
 {
     <TableComponent CustomItems="Outillages"
-                    GetFilterableText=@(v => $"{v.Libelle}")
-                    Pagination="true"
-                    PerPage="true"
-                    PageSize="6"
-                    Search="true"
-                    Accordion="true"
-                    NbCol="3"
-                    @ref="ChildComponentOutillage">
+                GetFilterableText=@(v => $"{v.Libelle}")
+                Pagination="true"
+                PerPage="true"
+                PageSize="6"
+                Search="true"
+                Accordion="true"
+                NbCol="3"
+                @ref="ChildComponentOutillage">
         <TableHeader>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Id)))"><b>Id</b></button></th>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Libelle)))"><b>Libelle</b></button></th>
@@ -23,20 +25,26 @@
         </RowTemplate>
         <RenderFragmentCollapse>
             <TableComponent CustomItems="Exemplaires.Where(v => v.OutillageId == context.Id)"
-                            Context="ex">
+                        Context="ex">
                 <TableHeader>
                     <th>Exemplaire Id</th>
                     <th>Exemplaire Libelle</th>
                     <th>Outillage ID</th>
                     <th>Exemplaire NB</th>
+                    <th>Button</th>
                 </TableHeader>
                 <RowTemplate>
                     <td>@ex.Id</td>
                     <td>@ex.Libelle</td>
                     <td>@ex.OutillageId</td>
                     <td>@ex.Nb</td>
+                    <button @onclick="@(() => ShowModal<CreateUpdateEntity>(ex.Id))">Show Add</button>
                 </RowTemplate>
             </TableComponent>
         </RenderFragmentCollapse>
     </TableComponent>
+}
+else
+{
+    <div>Loading...</div>
 }
