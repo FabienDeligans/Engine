@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using BlazorMongoTemplateApp.Pages.Modal
-@inherits BlazorMongoTemplateApp.Component.Modal.Caller.ModalComponentCaller
+@inherits ModalComponentCaller
 
 @if (Outillages.Any())
 {
@@ -38,7 +38,7 @@
                     <td>@ex.Libelle</td>
                     <td>@ex.OutillageId</td>
                     <td>@ex.Nb</td>
-                    <button @onclick="@(() => ShowModal<CreateUpdateEntity>(ex.Id))">Show Add</button>
+                    <button class="btn btn-info" @onclick="@(() => ShowModal<CreateUpdateEntity>(ex.Id, "Modification"))">Show Modal</button>
                 </RowTemplate>
             </TableComponent>
         </RenderFragmentCollapse>

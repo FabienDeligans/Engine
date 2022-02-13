@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
 using BlazorMongoTemplateApp.Component;
+using BlazorMongoTemplateApp.Component.Modal.Called;
 using BlazorMongoTemplateApp.Component.Modal.Caller;
 using BlazorMongoTemplateApp.Database;
 using BlazorMongoTemplateApp.Models;
@@ -23,7 +25,8 @@ namespace BlazorMongoTemplateApp.Pages
         private void Init()
         {
             using var context = ContextFactory.MakeContext();
-            context.DropDatabase();
+            context.DropCollection<Outillage>();
+            context.DropCollection<Exemplaire>();
 
             var outillages = new List<Outillage>(); 
             var exemplaires = new List<Exemplaire>();
@@ -64,6 +67,27 @@ namespace BlazorMongoTemplateApp.Pages
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
-       
+
+        public override async Task ShowModal<T>(string dataId, string title)
+        {
+            var parameters = new ModalParameters();
+            if (dataId != null)
+            {
+                parameters.Add("DataId", dataId);
+            }
+
+            var modal = Modal.Show<T>(title, parameters);
+            var result = await modal.Result;
+
+            if (result.Cancelled)
+            {
+                Modal.Show<OperationCancelled>();
+            }
+            else
+            {
+                DataReturned = result.Data;
+            }
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

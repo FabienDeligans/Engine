@@ -1,7 +1,10 @@
-﻿@inherits BlazorMongoTemplateApp.Component.Modal.Called.ModalComponentCalled
+﻿@inherits ModalComponentCalled
 
 <div class="simple-form">
     
+    <div>@Exemplaire.Id</div>
+    <div>@Exemplaire.Libelle</div>
+
     <button @onclick="Submit" class="btn btn-primary">Submit</button>
     <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
 </div>

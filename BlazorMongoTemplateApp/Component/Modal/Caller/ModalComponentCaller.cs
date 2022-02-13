@@ -12,7 +12,7 @@ namespace BlazorMongoTemplateApp.Component.Modal.Caller
         public IModalService Modal { get; set; }
         public object DataReturned { get; set; }
 
-        public async Task ShowModal<T>(string dataId) where T : IComponent
+        public virtual async Task ShowModal<T>(string dataId, string title) where T : IComponent
         {
             var parameters = new ModalParameters();
             if (dataId != null)
@@ -20,7 +20,7 @@ namespace BlazorMongoTemplateApp.Component.Modal.Caller
                 parameters.Add("DataId", dataId);
             }
 
-            var modal = Modal.Show<T>("Update", parameters);
+            var modal = Modal.Show<T>(title, parameters);
             var result = await modal.Result;
 
             if (result.Cancelled)

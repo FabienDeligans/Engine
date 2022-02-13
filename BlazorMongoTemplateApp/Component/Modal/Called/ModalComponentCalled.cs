@@ -14,12 +14,12 @@ namespace BlazorMongoTemplateApp.Component.Modal.Called
         
         public object ReturnedObject { get; set; }
 
-        public void Submit()
+        public virtual void Submit()
         {
             ModalInstance.CloseAsync(ModalResult.Ok(ReturnedObject));
         }
 
-        public void Cancel()
+        public virtual void Cancel()
         {
             ModalInstance.CancelAsync();
         }

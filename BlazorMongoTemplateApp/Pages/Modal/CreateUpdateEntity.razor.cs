@@ -16,5 +16,12 @@ namespace BlazorMongoTemplateApp.Pages.Modal
                 new Exemplaire() : 
                 context.GetEntity<Exemplaire>(DataId);
         }
+
+
+        public override void Submit()
+        {
+            ReturnedObject = Exemplaire; 
+            base.Submit();
+        }
     }
 }

@@ -7,6 +7,6 @@ namespace BlazorMongoTemplateApp.Component.Modal.Caller
     public interface IModalComponentCaller
     {
         [CascadingParameter] public IModalService Modal { get; set; }
-        Task ShowModal<T>(string dataId) where T : IComponent;
+        Task ShowModal<T>(string dataId, string title) where T : IComponent;
     }
 }
