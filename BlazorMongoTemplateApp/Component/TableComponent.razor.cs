@@ -20,6 +20,9 @@ namespace BlazorMongoTemplateApp.Component
         public IEnumerable<T> CustomItems { get; set; }
 
         [Parameter]
+        public bool Search { get; set; }
+
+        [Parameter]
         public Func<T, string> GetFilterableText { get; set; }
 
         [Parameter]
@@ -32,13 +35,13 @@ namespace BlazorMongoTemplateApp.Component
         public int PageSize { get; set; } = 10;
 
         [Parameter]
-        public bool Search { get; set; }
-
-        [Parameter]
         public bool Accordion { get; set; }
 
         [Parameter]
         public int NbCol { get; set; }
+
+        [Parameter]
+        public bool WithTab { get; set; }
 
         private IEnumerable<T> Items { get; set; }
         public int Quantity { get; set; }

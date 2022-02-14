@@ -33,7 +33,11 @@
                 <tr>@RowTemplate(item)</tr>
                 @if (RenderFragmentCollapse != null)
                 {
-                    <tr class="border border-5">
+                    <tr class="border border-5 border-info">
+                        @if (WithTab)
+                        {
+                            <td></td>
+                        }
                         <td colspan="@NbCol">
                             @RenderFragmentCollapse(item)
                         </td>
@@ -46,6 +50,10 @@
                 @if (item.Equals(_item) && Collapse)
                 {
                     <tr class="border border-5 border-info">
+                        @if (WithTab)
+                        {
+                            <td></td>
+                        }
                         <td colspan="@NbCol">
                             @RenderFragmentCollapse(item)
                         </td>

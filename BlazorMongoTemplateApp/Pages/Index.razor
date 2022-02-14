@@ -2,16 +2,50 @@
 @using BlazorMongoTemplateApp.Pages.Modal
 @inherits ModalComponentCaller
 
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="SearchParameter" @bind="@SearchParameter">
+    <label class="form-check-label" for="SearchParameter">Search Parameter with GetFilterableText Parameter</label>
+</div>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="PaginationParameter" @bind="@PaginationParameter">
+    <label class="form-check-label" for="PaginationParameter">Pagination Parameter with PerPageParameter Parameter</label>
+</div>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="PerPageParameter" @bind="@PerPageParameter">
+    <label class="form-check-label" for="PerPageParameter">Per Page Parameter</label>
+</div>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="AccordionParameter" @bind="@AccordionParameter">
+    <label class="form-check-label" for="AccordionParameter">Accordion Parameter</label>
+</div>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="WithTabParameter" @bind="@WithTabParameter">
+    <label class="form-check-label" for="WithTabParameter">WithTabParameter Parameter</label>
+</div>
+
+<br/>
+
+<button @onclick="Generate" class="btn btn-info">Generate 200 datas</button>
+<button @onclick="Drop" class="btn btn-info">Drop</button>
+
+<br/>
+<br/>
+
 @if (Outillages.Any())
 {
     <TableComponent CustomItems="Outillages"
+                Search="SearchParameter"
                 GetFilterableText=@(v => $"{v.Libelle}")
-                Pagination="true"
-                PerPage="true"
+                Pagination="PaginationParameter"
+                PerPage="PerPageParameter"
                 PageSize="10"
-                Search="true"
-                Accordion="true"
+                Accordion="AccordionParameter"
                 NbCol="3"
+                WithTab="WithTabParameter"
                 @ref="ChildComponentOutillage">
         <TableHeader>
             <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Id)))"><b>Id</b></button></th>
