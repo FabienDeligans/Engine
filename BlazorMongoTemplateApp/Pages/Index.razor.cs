@@ -58,7 +58,7 @@ namespace BlazorMongoTemplateApp.Pages
             }
             else
             {
-                DataReturned = result.Data;
+                ReturnedObject = result.Data;
             }
 
             await InvokeAsync(StateHasChanged);

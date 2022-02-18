@@ -10,7 +10,7 @@ namespace BlazorMongoTemplateApp.Component.Modal.Caller
     {
         [CascadingParameter]
         public IModalService Modal { get; set; }
-        public object DataReturned { get; set; }
+        public object ReturnedObject { get; set; }
 
         public virtual async Task ShowModal<T>(string dataId, string title) where T : IComponent
         {
@@ -29,7 +29,7 @@ namespace BlazorMongoTemplateApp.Component.Modal.Caller
             }
             else
             {
-                DataReturned = result.Data;
+                ReturnedObject = result.Data;
             }
             await InvokeAsync(StateHasChanged);
         }
