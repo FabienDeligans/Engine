@@ -1,5 +1,6 @@
 ﻿@using System.Reflection
 @using System.ComponentModel.DataAnnotations
+@using System.Globalization
 @typeparam T
 
 @if (Search)
@@ -8,13 +9,14 @@
         <div class="col-6">
             <div class="row">
                 <div class="col-6">
-                    <input class="form-control" type="text" @bind="_filter" @oninput="FilterItems" placeholder="Search" id="search" />
+                    @*<input class="form-control" type="text" @bind="_filter" @oninput="FilterItems" placeholder="Search" id="search" />*@
+                    <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange"  placeholder="Search" id="search" />
                 </div>
                 <div class="btn btn-info col-2" @onclick="Clear">
                     Clear
                 </div>
                 <div class="col">
-                    <label for="search" class="col-form-label">@Quantity Items</label>
+                    <label for="search" class="col-form-label">@Quantity.ToString("N0") Items</label>
                 </div>
             </div>
         </div>

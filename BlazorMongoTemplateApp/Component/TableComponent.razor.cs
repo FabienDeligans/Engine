@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorMongoTemplateApp.Component
 {
@@ -54,13 +56,51 @@ namespace BlazorMongoTemplateApp.Component
         private string _filter;
         private T _item;
         public bool Collapse;
-        
+        private Timer timerObj;
+
         protected override void OnInitialized()
         {
             Items = CustomItems;
             Quantity = Items.Count();
+
+            timerObj = new Timer(1000);
+            timerObj.Elapsed += OnUserFinish;
+            timerObj.AutoReset = false;
         }
-        
+
+        private void OnValueChange(KeyboardEventArgs e)
+        {
+            // remove previous one
+            timerObj.Stop();
+            // new timer
+            timerObj.Start();
+        }
+
+        private void OnUserFinish(Object source, ElapsedEventArgs e)
+        {
+            InvokeAsync(() =>
+            {
+                var filterFunc = GetFilterableText;
+
+                if (!string.IsNullOrEmpty(_filter))
+                {
+                    Items = Items
+                        .AsEnumerable()
+                        .Where(x => (filterFunc(x) ?? "")
+                            .Contains(_filter, StringComparison.InvariantCultureIgnoreCase));
+                }
+                else
+                {
+                    Items = Items.AsEnumerable();
+                }
+
+                Quantity = Items.Count();
+
+                Index = 0;
+                StateHasChanged();
+            });
+        }
+
         public void Display(T item)
         {
             Collapse = !Collapse;
