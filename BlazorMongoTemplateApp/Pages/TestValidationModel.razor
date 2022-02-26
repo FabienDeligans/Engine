@@ -1,32 +1,41 @@
 ﻿@page "/TestValidationModel"
 
 
-<h3>TestValidationModel</h3>
+<h3>Test Validation Model</h3>
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
 
-<EditForm Model="@_model" OnValidSubmit="@ValidSubmit" OnInvalidSubmit="@InvalidSubmit">
-    <div class="alert @_statusClass">@_statusMessage</div>
-    
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    
-    <div class="form-group">
-        <label for="numeric">Numeric: </label>
-        <InputNumber Id="numeric" Class="form-control" @bind-Value="@_model.Numeric"></InputNumber>
-        <ValidationMessage For="@(() => _model.Numeric)" />
-    </div>
-    <div class="form-group">
-        <label for="data">Data: </label>
-        <InputText Id="data" Class="form-control" @bind-Value="@_model.Data"></InputText>
-        <ValidationMessage For="@(() => _model.Data)" />
-    </div>
-    
-    <div class="form-group">
-        <label for="date">Date: </label>
-        <InputDate Id="date" Class="form-control" @bind-Value="@_model.Now"></InputDate>
-        <ValidationMessage For="@(() => _model.Now)" />
-    </div>
+            <EditForm Model="@_model" OnValidSubmit="@Valid" OnInvalidSubmit="@Cancel">
+                <div class="alert @_statusClass">@_statusMessage</div>
 
-    <button type="submit">Ok</button>
- 
-</EditForm>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="numeric">Numeric: </label>
+                    <InputNumber Id="numeric" Class="form-control" @bind-Value="@_model.Numeric"></InputNumber>
+                    <ValidationMessage For="@(() => _model.Numeric)" />
+                </div>
+                <div class="form-group">
+                    <label for="data">Data: </label>
+                    <InputText Id="data" Class="form-control" @bind-Value="@_model.Data"></InputText>
+                    <ValidationMessage For="@(() => _model.Data)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date: </label>
+                    <InputDate Id="date" Class="form-control" @bind-Value="@_model.Now"></InputDate>
+                    <ValidationMessage For="@(() => _model.Now)" />
+                </div>
+                
+                <br/>
+                <button class="btn btn-info" type="submit">Ok</button>
+                <button class="btn btn-danger" type="reset">Cancel</button>
+
+            </EditForm>
+
+        </div>
+    </div>
+</div>

@@ -1,7 +1,8 @@
 ﻿using Engine.Model;
 using System;
 using System.ComponentModel.DataAnnotations;
-using Engine.CustomAttribute;
+using BlazorMongoTemplateApp.Models.CustomAttribute;
+using BlazorMongoTemplateApp.Pages;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace BlazorMongoTemplateApp.Models
@@ -12,6 +13,7 @@ namespace BlazorMongoTemplateApp.Models
     public class MyEntity : Entity
     {
         [Required]
+        [Range(0.0, 10.0, ErrorMessage = "Value must be between {1} and {2}")]
         [BsonElement("numeric")]
         public int Numeric { get; set; }
         

@@ -8,9 +8,9 @@ namespace BlazorMongoTemplateApp.Pages
     {
         private string _statusMessage;
         private string _statusClass;
-        private readonly MyEntity _model = new MyEntity();
+        private readonly MyEntity _model = new MyEntity{Now = DateTime.Now.ToLocalTime()};
 
-        private void ValidSubmit()
+        private void Valid()
         {
             _statusClass = "alert-info";
             _statusMessage = DateTime.Now + " VALID";
@@ -28,7 +28,7 @@ namespace BlazorMongoTemplateApp.Pages
             StateHasChanged();
         }
 
-        private void InvalidSubmit()
+        private void Cancel()
         {
             _statusClass = "alert-danger";
             _statusMessage = DateTime.Now + " INVALID";
