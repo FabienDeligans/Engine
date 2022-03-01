@@ -1,0 +1,15 @@
+﻿@page "/TestImage"
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<h3>TestImage</h3>
+
+<div class="row">
+    <div @ref="dropZoneElement" class="drop-zone col-4">
+        <p>Drop a file or paste an image from the clipboard or select a file using the input</p>
+        <InputFile OnChange="@OnChange" @ref="inputFile" />
+    </div>
+</div>
+
+@* Display the uploaded image *@
+<img src="@src2" />

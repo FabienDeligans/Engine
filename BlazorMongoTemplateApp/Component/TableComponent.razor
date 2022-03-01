@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-6">
                     @*<input class="form-control" type="text" @bind="_filter" @oninput="FilterItems" placeholder="Search" id="search" />*@
-                    <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange"  placeholder="Search" id="search" />
+                    <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange" placeholder="Search" id="search" />
                 </div>
                 <div class="btn btn-info col-2" @onclick="Clear">
                     Clear
@@ -28,6 +28,42 @@
         <tr>@TableHeader</tr>
     </thead>
     <tbody>
+
+        @*<Virtualize TItem="T" Items="GetData()">
+            @if (!Accordion)
+            {
+            <tr>@RowTemplate(context)</tr>
+            @if (RenderFragmentCollapse != null)
+            {
+            <tr class="border border-5 border-info">
+            @if (WithTab)
+            {
+            <td></td>
+            }
+            <td colspan="@NbCol">
+            @RenderFragmentCollapse(context)
+            </td>
+            </tr>
+            }
+            }
+            else
+            {
+            <tr @onclick="() => Display(context)">@RowTemplate(context)</tr>
+            @if (context.Equals(_item) && Collapse)
+            {
+            <tr class="border border-5 border-info">
+            @if (WithTab)
+            {
+            <td></td>
+            }
+            <td colspan="@NbCol">
+            @RenderFragmentCollapse(context)
+            </td>
+            </tr>
+            }
+            }
+            </Virtualize>*@
+
         @foreach (var item in GetPage())
         {
             @if (!Accordion)

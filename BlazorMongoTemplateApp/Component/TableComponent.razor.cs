@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace BlazorMongoTemplateApp.Component
 {
@@ -207,5 +209,11 @@ namespace BlazorMongoTemplateApp.Component
             Clear();
             OnInitialized();
         }
+
+        private async Task<List<T>> GetData()
+        {
+            return await Task.FromResult(GetPage().ToList()); 
+        }
+
     }
 }

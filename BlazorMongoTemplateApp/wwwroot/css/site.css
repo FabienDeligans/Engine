@@ -1,5 +1,17 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.drop-zone {
+    padding: 20px;
+    width: 100%;
+    min-height: 100px;
+    border: 2px dashed #0087F7;
+    border-radius: 5px;
+}
+
+.drop-zone.hover {
+    border-style: solid;
+}
+
 .spinner {
     border: 16px solid silver;
     border-top: 16px solid #337AB7;
