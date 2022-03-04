@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using BlazorMongoTemplateApp.Database;
@@ -19,15 +20,7 @@ namespace BlazorMongoTemplateApp.Pages
         IJSObjectReference _dropZoneInstance;
 
         string src;
-        string src2;
-        private string path;
-
-        public MyEntity MyNewEntity { get; set; }
-        protected override void OnInitialized()
-        {
-            MyNewEntity = new MyEntity();
-        }
-
+        public string Error { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -44,25 +37,41 @@ namespace BlazorMongoTemplateApp.Pages
         // Called when a new file is uploaded
         async Task OnChange(InputFileChangeEventArgs e)
         {
-            Save(e.File);
-            //using var stream = e.File.OpenReadStream();
-            //using var ms = new MemoryStream();
-            //await stream.CopyToAsync(ms);
-            //src = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
+            try
+            {
+                if (e.File.Size >= 512000)
+                {
+                    throw new Exception("Fichier trop volumineux");
+                }
+
+                using var stream = e.File.OpenReadStream();
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                var file = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
+
+                using var context = ContextFactory.MakeContext();
+                context.DropCollection<Picture>();
+                context.Insert(
+                    new Picture
+                    {
+                        File = file,
+                        Name = e.File.Name
+                    });
+
+                src = context.QueryCollection<Picture>().FirstOrDefault()?.File;
+
+            }
+            catch (Exception exception)
+            {
+                Error = exception.Message;
+            }
+            finally
+            {
+                await _module.DisposeAsync();
+            }
+
         }
 
-        private void Save(IBrowserFile file)
-        {
-            using var context = ContextFactory.MakeContext(); 
-            context.DropDatabase();
-            MyNewEntity.Fichier = file;
-            context.Insert(MyNewEntity);
-
-            var fileDownload = context.GetEntity<MyEntity>(MyNewEntity.Id);
-            using var ms = new MemoryStream();
-            src2 = "data:" + fileDownload.Fichier.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
-            StateHasChanged();
-        }
 
         // Unregister the drop zone events
         public async ValueTask DisposeAsync()
@@ -77,6 +86,8 @@ namespace BlazorMongoTemplateApp.Pages
             {
                 await _module.DisposeAsync();
             }
+
+            Error = ""; 
         }
     }
 }

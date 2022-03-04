@@ -8,7 +8,7 @@ namespace BlazorMongoTemplateApp.Pages
     {
         private string _statusMessage;
         private string _statusClass;
-        private readonly MyEntity _model = new MyEntity{Now = DateTime.Now.ToLocalTime()};
+        private MyEntity _model = new MyEntity{Now = DateTime.Now.ToLocalTime()};
 
         private void Valid()
         {

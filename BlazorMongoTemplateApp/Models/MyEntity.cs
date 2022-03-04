@@ -14,14 +14,14 @@ namespace BlazorMongoTemplateApp.Models
     /// </summary>
     public class MyEntity : Entity
     {
-        //[Required]
-        //[Range(0.0, 10.0, ErrorMessage = "Value must be between {1} and {2}")]
+        [Required]
+        [Range(0.0, 10.0, ErrorMessage = "Value must be between {1} and {2}")]
         [BsonElement("numeric")]
         public int Numeric { get; set; }
-        
-        //[Required]
-        //[MaxLength(10)]
-        //[IsUnique]
+
+        [Required]
+        [MaxLength(10)]
+        [IsUnique]
         [BsonElement("data")]
         public string Data { get; set; }
 
@@ -29,8 +29,5 @@ namespace BlazorMongoTemplateApp.Models
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Now { get; set; }
 
-        public IBrowserFile Fichier { get; set; }
-
-        public byte[] DataBytes { get; set; }
     }
 }
