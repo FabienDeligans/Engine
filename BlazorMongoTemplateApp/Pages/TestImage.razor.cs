@@ -13,29 +13,11 @@ namespace BlazorMongoTemplateApp.Pages
 {
     public partial class TestImage
     {
-        ElementReference dropZoneElement;
-        InputFile inputFile;
+        private string Image { get; set; }
+        private string Error { get; set; }
 
-        IJSObjectReference _module;
-        IJSObjectReference _dropZoneInstance;
 
-        string src;
-        public string Error { get; set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                // Load the JS file
-                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./dropZone.js");
-
-                // Initialize the drop zone
-                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, inputFile.Element);
-            }
-        }
-
-        // Called when a new file is uploaded
-        async Task OnChange(InputFileChangeEventArgs e)
+        private async Task OnChange(InputFileChangeEventArgs e)
         {
             try
             {
@@ -44,50 +26,24 @@ namespace BlazorMongoTemplateApp.Pages
                     throw new Exception("Fichier trop volumineux");
                 }
 
-                using var stream = e.File.OpenReadStream();
-                using var ms = new MemoryStream();
+                await using var stream = e.File.OpenReadStream();
+                await using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
-                var file = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
+                var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
 
                 using var context = ContextFactory.MakeContext();
-                context.DropCollection<Picture>();
-                context.Insert(
-                    new Picture
-                    {
-                        File = file,
-                        Name = e.File.Name
-                    });
+                context.DropCollection<MyEntity>();
 
-                src = context.QueryCollection<Picture>().FirstOrDefault()?.File;
+                context.Insert(new MyEntity(){Data = data});
+
+                Image = context.QueryCollection<MyEntity>().FirstOrDefault()?.Data;
 
             }
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
-            finally
-            {
-                await _module.DisposeAsync();
-            }
 
-        }
-
-
-        // Unregister the drop zone events
-        public async ValueTask DisposeAsync()
-        {
-            if (_dropZoneInstance != null)
-            {
-                await _dropZoneInstance.InvokeVoidAsync("dispose");
-                await _dropZoneInstance.DisposeAsync();
-            }
-
-            if (_module != null)
-            {
-                await _module.DisposeAsync();
-            }
-
-            Error = ""; 
         }
     }
 }
