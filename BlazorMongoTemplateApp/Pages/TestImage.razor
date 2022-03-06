@@ -1,16 +1,39 @@
 ﻿@page "/TestImage"
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
+@if (string.IsNullOrEmpty(Error))
+{
+    <div class="row">
+        <div class="col-4">
+            <div class="alert-danger">
+                @Error
+            </div>
+        </div>
+    </div>
+}
 
-<h3>TestImage</h3>
+<br />
 
-<br/>
-
-@Error
-
-<br/>
-
-<InputFile OnChange="@OnChange"  />
-
-<br/>
-
-<img src="@Image" />
+<div class="row">
+    <div class="col-6">
+        <h3>Simple upload file (max 512 ko)</h3>
+        <InputFile OnChange="@OnChange" />
+        <br />
+        <a href="@Image.Data" download="@Image.Name" class="btn btn-info">Download</a>
+        <br />
+        <img src="@Image.Data" height="250" />
+    </div>
+    <div class="col-6">
+        <h3>Drag and drop file (max 512 ko)</h3>
+        <br />
+        <div @ref="dropZoneElement" class="drop-zone">
+            <p>Drop a file or paste an image from the clipboard or select a file using the input</p>
+            <InputFile OnChange="@OnDragAndDrop" @ref="inputFile" />
+        </div>
+        <br />
+        <a href="@FileMax512.Data" download="@FileMax512.Name" class="btn btn-info">Download</a>
+        <br />
+        <img src="@FileMax512.Data" height="250" />
+    </div>
+</div>

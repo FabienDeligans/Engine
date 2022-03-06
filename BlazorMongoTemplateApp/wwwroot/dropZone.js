@@ -43,7 +43,7 @@ export function initializeFileDropZone(dropZoneElement, inputFile) {
             dropZoneElement.removeEventListener('dragover', onDragHover);
             dropZoneElement.removeEventListener('dragleave', onDragLeave);
             dropZoneElement.removeEventListener("drop", onDrop);
-            dropZoneElement.removeEventListener('paste', handler);
+            dropZoneElement.removeEventListener('paste', onPaste);
         }
     }
 }
