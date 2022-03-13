@@ -6,7 +6,7 @@ namespace BlazorMongoTemplateApp.Pages
     {
         private void Do()
         {
-            var process = new Process();
+            using var process = new Process();
             process.StartInfo.FileName = $@"C:\Program Files\Notepad++\notepad++.exe";
             process.Start();
         }
