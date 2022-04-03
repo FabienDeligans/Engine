@@ -17,6 +17,13 @@ namespace EngineTests.Database
             context.DropDatabase();
         }
 
+        [TestMethod]
+        public void Test()
+        {
+            using var context = ContextFactoryTest.MakeContext();
+            var myEntity = new MyEntity(); 
+            context.Insert(myEntity);
+        }
 
         [TestMethod()]
         public void InsertQueryTest()

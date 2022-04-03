@@ -2,6 +2,9 @@
 @inject IJSRuntime JSRuntime
 @implements IAsyncDisposable
 
+
+
+
 @if (string.IsNullOrEmpty(Error))
 {
     <div class="row">
@@ -13,6 +16,16 @@
     </div>
 }
 
+<br />
+<br />
+
+<ToolTip Text="@(new List<string>(){"zer"})">
+
+    <button class="btn btn-danger">test tooltip</button>
+
+</ToolTip>
+
+<br />
 <br />
 
 <div class="row">

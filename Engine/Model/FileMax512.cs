@@ -6,6 +6,8 @@ namespace Engine.Model
 {
     public class FileMax512 : Entity
     {
+        [BsonId(IdGenerator = typeof(IdGenerator<FileMax512>))]
+        public override string Id { get; set; }
         public string Name { get; set; }
         public string Type{ get; set; }
         public long Size { get; set; }
@@ -15,5 +17,6 @@ namespace Engine.Model
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreationDate { get; set; }
+
     }
 }

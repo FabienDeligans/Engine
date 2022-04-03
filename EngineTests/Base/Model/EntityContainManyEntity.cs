@@ -6,6 +6,8 @@ namespace EngineTests.Base.Model
 {
     public class EntityContainManyEntity : Entity
     {
+        [BsonId(IdGenerator = typeof(IdGenerator<EntityContainManyEntity>))]
+        public override string Id { get; set; }
         public string? Data { get; set; }
 
         [BsonIgnore]

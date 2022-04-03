@@ -1,0 +1,31 @@
+﻿@page "/DragAndDrop"
+
+
+<h3>Drag And Drop</h3>
+
+<ul ondragover="event.preventDefault();"
+    ondragstart="event.dataTransfer.setData('', event.target.id);">
+    @foreach (var item in Models.OrderBy(x => x.Order))
+    {
+        <li @key="item" class="pb-2 position-relative" 
+            @ondragstart="() => draggingModel = item" 
+            @ondragend="()=> draggingModel = null" 
+            draggable="true">
+
+            <div>@item.Name - @item.Order - @item.Id</div>
+
+            @if (draggingModel is not null)
+            {
+                //this is overlay for droping. Otherwise it flickers between dragenter and leave, bsc of child elemnt
+                //this overlays the child elements of <li>
+                <div class="position-absolute w-100 h-100 "
+                     style="top: 0px; left: 0px; @(item.IsDragOver?"border-top-color:red;border-top-style: solid;border-top-width:thick;":"")"
+                     @ondrop="()=>HandleDrop(item)"
+                     @ondragenter="@(()=>{item.IsDragOver = true;})"
+                     @ondragleave="@(()=> {item.IsDragOver = false;})">
+                </div>
+            }
+
+        </li>
+    }
+</ul>

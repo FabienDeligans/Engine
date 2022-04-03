@@ -1,15 +1,14 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using System.Runtime.CompilerServices;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Engine.Model
 {
-    public class Entity : IEntity
+    public abstract class Entity : IEntity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
-        [BsonElement("isDisabled")]
+        [BsonIgnore]
+        public abstract string Id { get; set; }
         public bool IsDisabled { get; set; }
+        
     }
 }

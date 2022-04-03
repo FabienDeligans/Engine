@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace BlazorMongoTemplateApp.Component
 {
@@ -58,14 +57,14 @@ namespace BlazorMongoTemplateApp.Component
         private string _filter;
         private T _item;
         public bool Collapse;
-        private Timer timerObj;
+        private System.Timers.Timer timerObj;
 
         protected override void OnInitialized()
         {
             Items = CustomItems;
             Quantity = Items.Count();
 
-            timerObj = new Timer(1000);
+            timerObj = new System.Timers.Timer(1000);
             timerObj.Elapsed += OnUserFinish;
             timerObj.AutoReset = false;
         }
@@ -212,7 +211,7 @@ namespace BlazorMongoTemplateApp.Component
 
         private async Task<List<T>> GetData()
         {
-            return await Task.FromResult(GetPage().ToList()); 
+            return await Task.FromResult(GetPage().ToList());
         }
 
     }

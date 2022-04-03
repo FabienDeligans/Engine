@@ -6,6 +6,8 @@ namespace EngineTests.Base.Model
 {
     public class EntityContainForeignKey : Entity
     {
+        [BsonId(IdGenerator = typeof(IdGenerator<EntityContainForeignKey>))]
+        public override string Id { get; set; }
         public string? Data { get; set; }
 
         [ForeignKey(typeof(MyEntity))]

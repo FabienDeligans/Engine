@@ -25,45 +25,15 @@
 
 <table class="table table-hover table-sm">
     <thead>
-        <tr>@TableHeader</tr>
+        <tr>
+            @TableHeader
+            @if (Accordion)
+            {
+                <th>Open</th>
+            }
+        </tr>
     </thead>
     <tbody>
-
-        @*<Virtualize TItem="T" Items="GetData()">
-            @if (!Accordion)
-            {
-            <tr>@RowTemplate(context)</tr>
-            @if (RenderFragmentCollapse != null)
-            {
-            <tr class="border border-5 border-info">
-            @if (WithTab)
-            {
-            <td></td>
-            }
-            <td colspan="@NbCol">
-            @RenderFragmentCollapse(context)
-            </td>
-            </tr>
-            }
-            }
-            else
-            {
-            <tr @onclick="() => Display(context)">@RowTemplate(context)</tr>
-            @if (context.Equals(_item) && Collapse)
-            {
-            <tr class="border border-5 border-info">
-            @if (WithTab)
-            {
-            <td></td>
-            }
-            <td colspan="@NbCol">
-            @RenderFragmentCollapse(context)
-            </td>
-            </tr>
-            }
-            }
-            </Virtualize>*@
-
         @foreach (var item in GetPage())
         {
             @if (!Accordion)
@@ -84,7 +54,10 @@
             }
             else
             {
-                <tr @onclick="() => Display(item)">@RowTemplate(item)</tr>
+                <tr class="@(item.Equals(_item) && Collapse ? "border border-5 border-info" : "")">
+                    @RowTemplate(item)
+                    <td><button class="btn btn-dark" @onclick="(()=>Display(item))">Open</button></td>
+                </tr>
                 @if (item.Equals(_item) && Collapse)
                 {
                     <tr class="border border-5 border-info">

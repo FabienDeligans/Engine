@@ -109,5 +109,14 @@ namespace BlazorMongoTemplateApp.Pages
 
             InvokeAsync(StateHasChanged);
         }
+
+        private string ToolTip(string id)
+        {
+            return
+                $@"Nb d'exemplaires : 
+                {Exemplaires
+                    .Where(v => v.OutillageId == id)
+                    .Sum(v => v.Nb)}";
+        }
     }
 }

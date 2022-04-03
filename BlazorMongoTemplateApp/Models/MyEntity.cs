@@ -11,6 +11,9 @@ namespace BlazorMongoTemplateApp.Models
     /// </summary>
     public class MyEntity : Entity
     {
+        [BsonId(IdGenerator = typeof(IdGenerator<MyEntity>))]
+        public override string Id { get; set; }
+
         [Required]
         [Range(0.0, 10.0, ErrorMessage = "Value must be between {1} and {2}")]
         [BsonElement("numeric")]

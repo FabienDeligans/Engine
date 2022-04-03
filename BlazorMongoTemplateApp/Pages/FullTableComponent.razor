@@ -60,7 +60,11 @@
         <RowTemplate>
             <td>@context.Id</td>
             <td>@context.Libelle</td>
-            <td>@context.Nb + @Exemplaires.Where(v => v.OutillageId == context.Id).Sum(v => v.Nb)</td>
+            <td>
+                <ToolTip Text="@ToolTip(context.Id)">
+                    @context.Nb
+                </ToolTip>
+            </td>
         </RowTemplate>
         <RenderFragmentCollapse>
             <TableComponent CustomItems="Exemplaires.Where(v => v.OutillageId == context.Id)"
