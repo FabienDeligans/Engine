@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using BlazorMongoTemplateApp.Models;
 using MongoDB.Bson;
 
 namespace BlazorMongoTemplateApp.Pages
 {
     public partial class Index
     {
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+        }
+
         private void Do()
         {
             using var process = new Process();
@@ -14,21 +23,25 @@ namespace BlazorMongoTemplateApp.Pages
             process.Start();
         }
 
-        private void Do2()
+        private decimal ProgressPercent { get; set; }
+
+        private int I { get; set; }
+        private async Task Do2()
         {
-            var stringToConvert = "test";
+            var nb = 100;
+            I = 0; 
+            while (I < nb)
+            {
+                await Task.Delay(100);
+                I++;
+                StateHasChanged(); ProgressPercent = Decimal.Divide(I, nb);
+            }
 
-            var byteArray = new byte[12];
-
-            byteArray = Encoding.Default.GetBytes(stringToConvert);
-
-            var result = BitConverter.ToString(byteArray);
-
-            Id = new ObjectId(byteArray);
-
-            StateHasChanged();
         }
 
-        private ObjectId Id { get; set; }
+        private void Do3()
+        {
+            I++; 
+        }
     }
 }

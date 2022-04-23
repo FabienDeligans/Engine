@@ -118,5 +118,10 @@ namespace BlazorMongoTemplateApp.Pages
                     .Where(v => v.OutillageId == id)
                     .Sum(v => v.Nb)}";
         }
+
+        private List<string> GetToolTips(string contextId)
+        {
+            return new List<string>{contextId, null}; 
+        }
     }
 }

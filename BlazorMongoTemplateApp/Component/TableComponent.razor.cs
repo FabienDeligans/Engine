@@ -69,6 +69,12 @@ namespace BlazorMongoTemplateApp.Component
             timerObj.AutoReset = false;
         }
 
+        public void RefreshMe()
+        {
+            OnInitialized();
+            InvokeAsync(StateHasChanged);
+        }
+
         private void OnValueChange(KeyboardEventArgs e)
         {
             // remove previous one
