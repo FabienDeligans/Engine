@@ -2,25 +2,26 @@
 
 <h3>TableTest</h3>
 
+<input type="number" @bind="Count" />
 <button class="btn btn-info" @onclick="Generate">Generate</button>
 <div class="progress">
     <div class="progress-bar" role="progressbar" style="width: @(Decimal.ToInt32(progressPercent * 100))%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Chargement @string.Format("{0:P0}", progressPercent)</div>
 </div>
-@(progressPercent*100)%
-@Count
-<br/>
+@(progressPercent.ToString("P0"))
+@(Count.ToString("N"))
+<br />
 
-@if (progressPercent*100 == 100)
+@if (Outillages.Count == Count)
 {
 
     <Table T="Outillage" CollectionT="Outillages" @ref="TableOutillage">
         <Header>
-            <HeaderValue Value="Id" SortBy="@(nameof(Outillage.Libelle))" OnSort="TableOutillage.Sort"/>
-            <HeaderValue Value="Nb" SortBy="@(nameof(Outillage.Nb))" OnSort="TableOutillage.Sort"/>
+            <HeaderValue Value="Libelle" SortBy="@(nameof(Outillage.Libelle))" OnSort="TableOutillage.Sort" />
+            <HeaderValue Value="Nb" SortBy="@(nameof(Outillage.Nb))" OnSort="TableOutillage.Sort" />
         </Header>
         <Row>
-            <RowValue Value="@context.Libelle"/>
-            <RowValue Value="@context.Nb"/>
+            <RowValue Value="@context.Libelle" />
+            <RowValue Value="@context.Nb" />
         </Row>
     </Table>
 
@@ -35,7 +36,7 @@
 
     public Table<Outillage> TableOutillage { get; set; }
 
-    private List<Outillage> Outillages { get; set; } = new List<Outillage>(); 
+    private List<Outillage> Outillages { get; set; } = new List<Outillage>();
     private static readonly Random Random = new();
 
     private static string RandomString(int length)
@@ -49,29 +50,26 @@
 
     private async Task Generate()
     {
-        progressPercent = 0; 
+        progressPercent = 0;
         Outillages = new List<Outillage>();
-        var nb = 1000; 
 
-        for (var i = 0; i < nb; i++)
+        var percent = 1;
+        for (var i = 1; i <= Count; i++)
         {
-            await Task.Delay(1);
 
             Outillages.Add(new Outillage
-            {
-                Libelle = RandomString(10),
-                Nb = new Random().Next(0, 11)
-            });
+                {
+                    Libelle = RandomString(10),
+                    Nb = new Random().Next(0, 11)
+                });
 
-            progressPercent = Decimal.Divide(i+1, nb);
-
-            if (progressPercent * 100 == 50)
+            if (i == Count / 10 * percent)
             {
-                var truc = ""; 
+                await Task.Delay(1);
+                progressPercent = Decimal.Divide(i + 1, Count);
+                percent++;
             }
-            Count = Outillages.Count; 
-
-            await InvokeAsync(StateHasChanged); 
+            await InvokeAsync(StateHasChanged);
         }
 
     }

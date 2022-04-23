@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
-using BlazorMongoTemplateApp.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
@@ -17,6 +14,7 @@ namespace BlazorMongoTemplateApp.Component
 
         [Parameter]
         public RenderFragment<T> Row { get; set; }
+        public Pagination<T>PaginationComponent { get; set; }
 
         [Parameter]
         public IEnumerable<T> CollectionT { get; set; }
@@ -75,8 +73,13 @@ namespace BlazorMongoTemplateApp.Component
         private async ValueTask<ItemsProviderResult<T>> LoadItems(ItemsProviderRequest request)
         {
             var items = Items;
-
             return new ItemsProviderResult<T>(items, items.Count());
+        }
+
+        public void RefreshParent()
+        {
+            virtualizeComponent.RefreshDataAsync(); 
+            InvokeAsync(StateHasChanged); 
         }
     }
 }

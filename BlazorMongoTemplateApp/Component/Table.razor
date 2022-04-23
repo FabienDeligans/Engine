@@ -13,13 +13,12 @@
         </tr>
     </thead>
     <tbody>
-        @*@foreach (var row in Items)
-            {*@
-
         <Virtualize ItemsProvider="@LoadItems" @ref="virtualizeComponent">
             <tr>@Row(context)</tr>
         </Virtualize>
-
-        @*}*@
     </tbody>
 </table>
+
+<CascadingValue Value="this">
+    <Pagination CollectionT="CollectionT"></Pagination>
+</CascadingValue>
