@@ -4,16 +4,11 @@
 
 <input type="number" @bind="Count" />
 <button class="btn btn-info" @onclick="Generate">Generate</button>
-<div class="progress">
-    <div class="progress-bar" role="progressbar" style="width: @(Decimal.ToInt32(progressPercent * 100))%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Chargement @string.Format("{0:P0}", progressPercent)</div>
-</div>
-@(progressPercent.ToString("P0"))
-@(Count.ToString("N"))
+
 <br />
 
 @if (Outillages.Count == Count)
 {
-
     <Table T="Outillage" CollectionT="Outillages" @ref="TableOutillage">
         <Header>
             <HeaderValue Value="Libelle" SortBy="@(nameof(Outillage.Libelle))" OnSort="TableOutillage.Sort" />
@@ -31,7 +26,6 @@
 
 @code {
 
-    private decimal progressPercent { get; set; }
     private int Count { get; set; }
 
     public Table<Outillage> TableOutillage { get; set; }
@@ -48,31 +42,20 @@
 
 
 
-    private async Task Generate()
+    private void Generate()
     {
-        progressPercent = 0;
         Outillages = new List<Outillage>();
 
-        var percent = 1;
         for (var i = 1; i <= Count; i++)
         {
-
             Outillages.Add(new Outillage
-                {
-                    Libelle = RandomString(10),
-                    Nb = new Random().Next(0, 11)
-                });
-
-            if (i == Count / 10 * percent)
             {
-                await Task.Delay(1);
-                progressPercent = Decimal.Divide(i + 1, Count);
-                percent++;
-            }
-            await InvokeAsync(StateHasChanged);
+                Libelle = RandomString(10),
+                Nb = i
+            });
         }
-
     }
+
 
 
 }

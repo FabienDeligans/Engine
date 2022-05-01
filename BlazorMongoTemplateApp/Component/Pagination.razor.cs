@@ -11,18 +11,17 @@ namespace BlazorMongoTemplateApp.Component
         public Table<T>TableParent { get; set; }
 
         [Parameter]
-        public IEnumerable<T> CollectionT { get; set; }
         public IEnumerable<T> Items { get; set; }
+        
+        [Parameter]
+        public int PageSize { get; set; } 
 
         private int NbPage { get; set; }
-        private int PageSize { get; set; } = 10;
         private int Index { get; set; }
 
         private List<int>ListPages { get; set; }
         protected override void OnInitialized()
         {
-            Items = CollectionT; 
-
             Index = 1; 
             NbPage = (int)Math.Ceiling(Items.Count() / (double)PageSize);
             GenerateButton(); 
@@ -40,9 +39,17 @@ namespace BlazorMongoTemplateApp.Component
 
         private void ChangePage(int i)
         {
-            var pageDisplay = CollectionT.Skip(i * PageSize).Take(PageSize);
+            Index = i - 1;
+            var pageDisplay = Items.Skip(Index * PageSize).Take(PageSize);
+
             TableParent.Items = pageDisplay; 
             TableParent.RefreshParent();
+        }
+        
+        public void RefreshMe()
+        {
+            OnInitialized();
+            StateHasChanged();
         }
     }
 }

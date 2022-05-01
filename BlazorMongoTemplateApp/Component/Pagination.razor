@@ -6,7 +6,7 @@
         <li class="page-item"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
         @foreach (var i in ListPages)
         {
-            <li class="page-item"><a class="page-link" @onclick="() => ChangePage(i)">@i</a></li>
+            <li class="page-item @(Index+1 == i ? "active" : "")"><a class="page-link" @onclick="() => ChangePage(i)">@i</a></li>
         }
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
     </ul>
