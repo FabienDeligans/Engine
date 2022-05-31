@@ -27,6 +27,7 @@ namespace BlazorMongoTemplateApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
+            services.AddHttpContextAccessor();
 
             services.AddResponseCompression(opts =>
             {

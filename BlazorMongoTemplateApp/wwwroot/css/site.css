@@ -1,5 +1,10 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.Scroll {
+    height: 550px;
+    overflow-y: scroll;
+}
+
 .tooltip-wrapper {
     position: relative;
     display: inline-block;

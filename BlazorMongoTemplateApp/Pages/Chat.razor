@@ -1,0 +1,62 @@
+﻿@page "/chat"
+@inherits SignalRDataList<ChatMessage>
+
+<h3>Chat</h3>
+
+@if (User is null)
+{
+    <input type="text" class="form-control" @bind="_userName" placeholder="Create new user or use 'fab' or 'bob' or 'truc'" />
+    <button class="btn btn-info" @onclick="Login">Login</button>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+
+                <h3>@User.UserName => @(_toUserId != null ? UserList.FirstOrDefault(v => v.Id == _toUserId).UserName : "")</h3>
+
+                <div>Send message to : </div>
+                <select class="form-select" @onchange="SelectToUser">
+                    <option></option>
+                    @foreach (var user in UserList.Where(v => v.Id != User.Id))
+                    {
+                        <option value="@user.Id">@user.UserName</option>
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container Scroll">
+        @if (DataList.Any() && _toUserId != null)
+        {
+            foreach (var message in DataList.Where(v => (v.FromUserId == User.Id || v.FromUserId == _toUserId) && (v.ToUserId == _toUserId || v.ToUserId == User.Id)).OrderBy(v => v.DateTime))
+            {
+                <div class="row">
+                    @if (message.FromUserId == User.Id)
+                    {
+                        <div class="col-6 offset-6">
+                            <p>
+                                <div class="alert-info">@UserList.FirstOrDefault(v => v.Id == message.FromUserId).UserName - @message.DateTime</div>
+                                <div>@message.Message</div>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-6">
+                            <p>
+                                <div class="alert-secondary">@UserList.FirstOrDefault(v => v.Id == message.FromUserId).UserName - @message.DateTime</div>
+                                <div>@message.Message</div>
+                            </p>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+    <input type="text" class="form-control" @bind="_message" />
+    <button class="btn btn-info" @onclick="SendMessage">Send</button>
+}

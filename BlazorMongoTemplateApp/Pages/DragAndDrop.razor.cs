@@ -21,7 +21,7 @@ namespace BlazorMongoTemplateApp.Pages
 
 
         protected override void OnInitialized()
-        {//fill names with "random" string
+        {
             for (var i = 0; i < 1000; i++)
             {
                 Model m = new()
