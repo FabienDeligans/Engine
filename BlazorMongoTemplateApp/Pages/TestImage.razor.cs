@@ -51,7 +51,7 @@ namespace BlazorMongoTemplateApp.Pages
 
                 context.Insert(fichier);
 
-                Image = context.QueryCollection<FileMax512>().FirstOrDefault();
+                Image = context.QueryCollection<FileMax512>().LastOrDefault();
 
             }
             catch (Exception exception)
@@ -83,17 +83,17 @@ namespace BlazorMongoTemplateApp.Pages
         }
 
         // Called when a new file is uploaded
-        async Task OnDragAndDrop(InputFileChangeEventArgs e)
+        private async Task OnDragAndDrop(InputFileChangeEventArgs e)
         {
             Error = ""; 
             try
             {
-                if (e.File.Size >= 512000)
-                {
-                    throw new Exception("Fichier trop volumineux");
-                }
+                //if (e.File.Size >= 512000)
+                //{
+                //    throw new Exception("Fichier trop volumineux");
+                //}
 
-                using var stream = e.File.OpenReadStream();
+                using var stream = e.File.OpenReadStream(99999999999);
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
                 var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
@@ -107,17 +107,30 @@ namespace BlazorMongoTemplateApp.Pages
                     CreationDate = DateTime.Now
                 };
 
-                using var context = ContextFactory.MakeContext();
-                context.DropDatabase();
-                context.Insert(fichier);
+                //using var context = ContextFactory.MakeContext();
+                //context.DropDatabase();
+                //context.Insert(fichier);
 
-                FileMax512 = context.QueryCollection<FileMax512>().FirstOrDefault();
+                //FileMax512 = context.QueryCollection<FileMax512>().FirstOrDefault();
+
+
+                using var context = ContextFactory.MakeContext();
+                var id = await context.UploadFile(e.File.Name, stream);
 
             }
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
+
+        }
+        private async Task Do()
+        {
+            var id = "62bb6ad3ce60bf9c47efc608";
+            using var context = ContextFactory.MakeContext();
+
+            var file = await context.DownloadFile(id);
+            var _ = file.Clone(); 
 
         }
 
@@ -135,5 +148,6 @@ namespace BlazorMongoTemplateApp.Pages
                 await _module.DisposeAsync();
             }
         }
+
     }
 }

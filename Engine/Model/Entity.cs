@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace Engine.Model
 {

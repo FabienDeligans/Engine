@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using Engine.Model;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using ForeignKeyAttribute = Engine.CustomAttribute.ForeignKeyAttribute;
 
 namespace Engine.Database
@@ -27,6 +31,27 @@ namespace Engine.Database
         public void Dispose()
         {
         }
+
+        public async Task<ObjectId> UploadFile(string filename, Stream stream)
+        {
+
+            var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
+            {
+                ChunkSizeBytes = 261120,
+                WriteConcern = WriteConcern.WMajority,
+            }); 
+            return await bucket.UploadFromStreamAsync(filename, stream);
+                
+            
+        }
+
+        public async Task<byte[]> DownloadFile(string id)
+        {
+            var bucket = new GridFSBucket(_mongoDatabase);
+            return await bucket.DownloadAsBytesAsync(id); 
+        }
+
+
 
         public void DropDatabase() => MongoClient.DropDatabase(DatabaseName);
 
