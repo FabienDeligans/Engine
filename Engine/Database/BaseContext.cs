@@ -32,23 +32,40 @@ namespace Engine.Database
         {
         }
 
-        public async Task<ObjectId> UploadFile(string filename, Stream stream)
+        public async Task<ObjectId> UploadFile(string filename, Byte[] data)
         {
 
             var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
             {
                 ChunkSizeBytes = 261120,
                 WriteConcern = WriteConcern.WMajority,
-            }); 
-            return await bucket.UploadFromStreamAsync(filename, stream);
-                
-            
+            });
+            return await bucket.UploadFromBytesAsync(filename, data);
+
+
         }
 
-        public async Task<byte[]> DownloadFile(string id)
+        public async Task<(string filename, byte[] result)> DownloadFile(ObjectId id)
         {
-            var bucket = new GridFSBucket(_mongoDatabase);
-            return await bucket.DownloadAsBytesAsync(id); 
+            var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
+            {
+                ChunkSizeBytes = 261120,
+                ReadConcern = ReadConcern.Majority,
+            });
+
+            var result = await bucket.DownloadAsBytesAsync(id);
+
+            await using var stream = await bucket.OpenDownloadStreamAsync(id);
+            var data = stream;
+
+            var fileId = data.FileInfo.Id; 
+            var fileName= data.FileInfo.Filename;
+
+            stream.Close();
+
+            return (fileName, result); 
+
+
         }
 
 

@@ -39,9 +39,9 @@
     </div>
     <div class="col-6">
         
-        <a @onclick="Do">download</a>
+        <a @onclick="Do" href="@FileUrl" download="FileName">download</a>
 
-        <h3>Drag and drop file (max 512 ko)</h3>
+        <h3>Drag and drop file</h3>
         <br/>
         <div @ref="dropZoneElement" class="drop-zone">
             <p>Drop a file or paste an image from the clipboard or select a file using the input</p>

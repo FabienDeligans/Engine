@@ -7,6 +7,7 @@ using Engine.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using MongoDB.Bson;
 
 namespace BlazorMongoTemplateApp.Pages
 {
@@ -88,34 +89,24 @@ namespace BlazorMongoTemplateApp.Pages
             Error = ""; 
             try
             {
-                //if (e.File.Size >= 512000)
-                //{
-                //    throw new Exception("Fichier trop volumineux");
-                //}
-
                 using var stream = e.File.OpenReadStream(99999999999);
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
                 var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
 
-                var fichier = new FileMax512
-                {
-                    Name = e.File.Name,
-                    Type = e.File.ContentType,
-                    Size = e.File.Size,
-                    Data = data,
-                    CreationDate = DateTime.Now
-                };
-
-                //using var context = ContextFactory.MakeContext();
-                //context.DropDatabase();
-                //context.Insert(fichier);
-
-                //FileMax512 = context.QueryCollection<FileMax512>().FirstOrDefault();
-
-
                 using var context = ContextFactory.MakeContext();
-                var id = await context.UploadFile(e.File.Name, stream);
+
+                byte[] buffer = new byte[16 * 1024];
+                int read;
+
+                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+
+                var arrayByte = ms.ToArray(); 
+
+                Id = await context.UploadFile(e.File.Name, arrayByte);
 
             }
             catch (Exception exception)
@@ -124,15 +115,21 @@ namespace BlazorMongoTemplateApp.Pages
             }
 
         }
-        private async Task Do()
+        private ObjectId Id { get; set; }
+
+        private async void Do()
         {
-            var id = "62bb6ad3ce60bf9c47efc608";
             using var context = ContextFactory.MakeContext();
 
-            var file = await context.DownloadFile(id);
-            var _ = file.Clone(); 
+            var (FileName, file) = await context.DownloadFile(Id);
+            var ext = Path.GetExtension(FileName); 
 
+            var truc = Convert.ToBase64String(file);
+            FileUrl = string.Format("data:" + ext, truc); 
         }
+
+        private string FileUrl; 
+        private string FileName; 
 
         // Unregister the drop zone events
         public async ValueTask DisposeAsync()
