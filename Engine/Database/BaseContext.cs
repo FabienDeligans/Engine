@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -32,20 +31,18 @@ namespace Engine.Database
         {
         }
 
-        public async Task<ObjectId> UploadFile(string filename, Byte[] data)
+        public async Task<string> UploadFile(string filename, Byte[] data)
         {
-
             var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
             {
                 ChunkSizeBytes = 261120,
                 WriteConcern = WriteConcern.WMajority,
             });
-            return await bucket.UploadFromBytesAsync(filename, data);
-
-
+            var objectId = await bucket.UploadFromBytesAsync(filename, data);
+            return objectId.ToString(); 
         }
 
-        public async Task<(string filename, byte[] result)> DownloadFile(ObjectId id)
+        public async Task<Fichier> DownloadFile(string id)
         {
             var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
             {
@@ -53,18 +50,30 @@ namespace Engine.Database
                 ReadConcern = ReadConcern.Majority,
             });
 
-            var result = await bucket.DownloadAsBytesAsync(id);
 
-            await using var stream = await bucket.OpenDownloadStreamAsync(id);
-            var data = stream;
+            var objectId = ObjectId.Parse(id); 
 
-            var fileId = data.FileInfo.Id; 
-            var fileName= data.FileInfo.Filename;
+            var result = await bucket.DownloadAsBytesAsync(objectId);
+
+            await using var stream = await bucket.OpenDownloadStreamAsync(objectId);
+
+            var fichier = new Fichier
+            {
+                Id = stream.FileInfo.Id.ToString(), 
+                Name = stream.FileInfo.Filename, 
+                UploadDate = stream.FileInfo.UploadDateTime, 
+                Size = stream.FileInfo.Length, 
+                DataBytes = result
+
+            }; 
+            var fileId = stream.FileInfo.Id; 
+            var fileName= stream.FileInfo.Filename;
+            var fileUploadDateTime = stream.FileInfo.UploadDateTime;
+            var fileLength = stream.FileInfo.Length;
 
             stream.Close();
 
-            return (fileName, result); 
-
+            return (fichier); 
 
         }
 

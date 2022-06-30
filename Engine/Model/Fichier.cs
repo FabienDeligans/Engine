@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Driver.GridFS;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Engine.Model
 {
-    public class Fichier 
+    public class Fichier : Entity
     {
-        public string Id { get; set; }
+        public override string Id { get; set; }
         public string Name { get; set; }
         public byte[] DataBytes { get; set; }
+        
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime UploadDate { get; set; }
+        public long Size { get; set; }
+
     }
 }

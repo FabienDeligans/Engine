@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using BlazorMongoTemplateApp.Models;
-using MongoDB.Bson;
-
-namespace BlazorMongoTemplateApp.Pages
+﻿namespace BlazorMongoTemplateApp.Pages
 {
     public partial class Index
     {

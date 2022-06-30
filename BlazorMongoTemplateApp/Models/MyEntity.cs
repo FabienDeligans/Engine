@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using BlazorMongoTemplateApp.Models.CustomAttribute;
+using Engine.CustomAttribute;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace BlazorMongoTemplateApp.Models

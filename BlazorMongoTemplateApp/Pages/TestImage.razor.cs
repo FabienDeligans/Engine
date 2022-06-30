@@ -7,7 +7,6 @@ using Engine.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using MongoDB.Bson;
 
 namespace BlazorMongoTemplateApp.Pages
 {
@@ -86,13 +85,13 @@ namespace BlazorMongoTemplateApp.Pages
         // Called when a new file is uploaded
         private async Task OnDragAndDrop(InputFileChangeEventArgs e)
         {
-            Error = ""; 
+            Error = "";
             try
             {
                 using var stream = e.File.OpenReadStream(99999999999);
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
-                var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
+                Data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
 
                 using var context = ContextFactory.MakeContext();
 
@@ -104,33 +103,40 @@ namespace BlazorMongoTemplateApp.Pages
                     ms.Write(buffer, 0, read);
                 }
 
-                var arrayByte = ms.ToArray(); 
+                var arrayByte = ms.ToArray();
 
                 Id = await context.UploadFile(e.File.Name, arrayByte);
 
             }
+            
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
 
         }
-        private ObjectId Id { get; set; }
-
-        private async void Do()
+        private string Id { get; set; }
+        private string Data { get; set; }
+        private async void Download()
         {
-            using var context = ContextFactory.MakeContext();
+            Error = "";
+            try
+            {
+                using var context = ContextFactory.MakeContext();
 
-            var (FileName, file) = await context.DownloadFile(Id);
-            var ext = Path.GetExtension(FileName); 
+                var fichier = await context.DownloadFile(Id);
+                var fileStream = new MemoryStream(fichier.DataBytes);
+                using var streamRef = new DotNetStreamReference(stream: fileStream);
+                await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fichier.Name, streamRef);
+            }
+            catch (Exception e)
+            {
 
-            var truc = Convert.ToBase64String(file);
-            FileUrl = string.Format("data:" + ext, truc); 
+                Error = e.Message;
+            }
+
         }
-
-        private string FileUrl; 
-        private string FileName; 
-
+        
         // Unregister the drop zone events
         public async ValueTask DisposeAsync()
         {
