@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Blazored.Modal;
+using Microsoft.AspNetCore.Mvc;
+using MudBlazor.Services;
 
 
 namespace BlazorMongoTemplateApp
@@ -28,6 +30,9 @@ namespace BlazorMongoTemplateApp
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
             services.AddHttpContextAccessor();
+
+            services.AddMudServices();
+
 
             services.AddResponseCompression(opts =>
             {

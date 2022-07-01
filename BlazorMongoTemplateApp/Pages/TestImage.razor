@@ -19,27 +19,25 @@
 <br />
 <br />
 
-<ToolTip Text="@(new List<string>(){"zer"})">
-
-    <button class="btn btn-danger">test tooltip</button>
-
-</ToolTip>
-
-<br />
-<br />
-
 <div class="row">
     <div class="col-6">
-        
-
+        <h3>Drag and drop file max 512</h3>
+        <br/>
+        <div @ref="dropZoneElement" class="drop-zone">
+            <p>Drop a file or paste an image from the clipboard or select a file using the input</p>
+            <InputFile OnChange="@OnUploadFileMax512" @ref="inputFile"/>
+        </div>
+        <br/>
+        <button class="btn btn-warning" @onclick="(() => DownloadFile(FileMax512.Id))">download</button>
+    </div>
+    <div class="col-6">
         <h3>Drag and drop file</h3>
         <br/>
         <div @ref="dropZoneElement" class="drop-zone">
             <p>Drop a file or paste an image from the clipboard or select a file using the input</p>
-            <InputFile OnChange="@OnDragAndDrop" @ref="inputFile"/>
+            <InputFile OnChange="@OnUploadFile" @ref="inputFile"/>
         </div>
         <br/>
-        <button class="btn btn-warning" @onclick="Download">download</button>
-        <img src="@Data" height="250"/>
+        <button class="btn btn-warning" @onclick="(() => DownloadFile(Fichier.Id))">download</button>
     </div>
 </div>

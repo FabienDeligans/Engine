@@ -12,16 +12,17 @@ namespace BlazorMongoTemplateApp.Pages
 {
     public partial class TestImage
     {
-        private FileMax512 Image { get; set; }
         private string Error { get; set; } = "";
+        private FileMax512 FileMax512 { get; set; }
+        private Fichier Fichier { get; set; }
 
         protected override void OnInitialized()
         {
-            Image = new FileMax512();
             FileMax512 = new FileMax512();
+            Fichier = new Fichier();
         }
 
-        private async Task OnChange(InputFileChangeEventArgs e)
+        private async Task OnUploadFileMax512(InputFileChangeEventArgs e)
         {
             Error = "";
 
@@ -37,7 +38,7 @@ namespace BlazorMongoTemplateApp.Pages
                 await stream.CopyToAsync(ms);
                 var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
 
-                var fichier = new FileMax512
+                FileMax512 = new FileMax512
                 {
                     Name = e.File.Name, 
                     Type = e.File.ContentType, 
@@ -49,41 +50,21 @@ namespace BlazorMongoTemplateApp.Pages
                 using var context = ContextFactory.MakeContext();
                 context.DropDatabase();
 
-                context.Insert(fichier);
+                context.Insert(FileMax512);
 
-                Image = context.QueryCollection<FileMax512>().LastOrDefault();
+                FileMax512 = context.QueryCollection<FileMax512>().LastOrDefault();
 
             }
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
-
         }
 
 
-        ElementReference dropZoneElement;
-        InputFile inputFile;
-
-        IJSObjectReference _module;
-        IJSObjectReference _dropZoneInstance;
-
-        public FileMax512 FileMax512 { get; set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                // Load the JS file
-                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./dropZone.js");
-
-                // Initialize the drop zone
-                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, inputFile.Element);
-            }
-        }
 
         // Called when a new file is uploaded
-        private async Task OnDragAndDrop(InputFileChangeEventArgs e)
+        private async Task OnUploadFile(InputFileChangeEventArgs e)
         {
             Error = "";
             try
@@ -91,7 +72,6 @@ namespace BlazorMongoTemplateApp.Pages
                 using var stream = e.File.OpenReadStream(99999999999);
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
-                Data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
 
                 using var context = ContextFactory.MakeContext();
 
@@ -105,36 +85,53 @@ namespace BlazorMongoTemplateApp.Pages
 
                 var arrayByte = ms.ToArray();
 
-                Id = await context.UploadFile(e.File.Name, arrayByte);
-
+                Fichier = new Fichier
+                {
+                    Id = await context.UploadFile(e.File.Name, arrayByte)
+                };
             }
             
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
-
         }
-        private string Id { get; set; }
-        private string Data { get; set; }
-        private async void Download()
+        private async void DownloadFile(string id)
         {
             Error = "";
             try
             {
                 using var context = ContextFactory.MakeContext();
 
-                var fichier = await context.DownloadFile(Id);
-                var fileStream = new MemoryStream(fichier.DataBytes);
+                Fichier = await context.DownloadFile(id);
+                var fileStream = new MemoryStream(Fichier.DataBytes);
                 using var streamRef = new DotNetStreamReference(stream: fileStream);
-                await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fichier.Name, streamRef);
+                await JSRuntime.InvokeVoidAsync("downloadFileFromStream", Fichier.Name, streamRef);
             }
             catch (Exception e)
             {
 
                 Error = e.Message;
             }
+        }
+        
 
+        ElementReference dropZoneElement;
+        InputFile inputFile;
+
+        IJSObjectReference _module;
+        IJSObjectReference _dropZoneInstance;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                // Load the JS file
+                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./dropZone.js");
+
+                // Initialize the drop zone
+                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, inputFile.Element);
+            }
         }
         
         // Unregister the drop zone events
