@@ -62,28 +62,18 @@ namespace BlazorMongoTemplateApp.Pages
         }
 
 
-
         // Called when a new file is uploaded
         private async Task OnUploadFile(InputFileChangeEventArgs e)
         {
             Error = "";
             try
             {
-                using var stream = e.File.OpenReadStream(99999999999);
-                using var ms = new MemoryStream();
+                await using var stream = e.File.OpenReadStream(99999999999);
+                await using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
+                var arrayByte = ms.ToArray();
 
                 using var context = ContextFactory.MakeContext();
-
-                byte[] buffer = new byte[16 * 1024];
-                int read;
-
-                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-
-                var arrayByte = ms.ToArray();
 
                 Fichier = new Fichier
                 {
@@ -116,7 +106,7 @@ namespace BlazorMongoTemplateApp.Pages
         }
         
 
-        ElementReference dropZoneElement;
+        ElementReference dropZoneFile;
         InputFile inputFile;
 
         IJSObjectReference _module;
@@ -130,7 +120,7 @@ namespace BlazorMongoTemplateApp.Pages
                 _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./dropZone.js");
 
                 // Initialize the drop zone
-                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneElement, inputFile.Element);
+                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneFile, inputFile.Element);
             }
         }
         
