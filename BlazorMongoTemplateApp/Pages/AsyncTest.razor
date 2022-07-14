@@ -1,0 +1,24 @@
+﻿@page "/asyncTest"
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <button @onclick="Do" class="btn btn-info">Do</button>
+            <div class="row">
+                <div col-3>@Start</div>
+                <div col-3>@End</div>
+                <div col-3>@(End-Start)</div>
+                <div col-3>@Ac1 - @Ac2</div>
+            </div>
+        </div>
+        <div class="col-6">
+            <button @onclick="DoAsync" class="btn btn-info">Do Async</button>
+            <div class="row">
+                <div col-3>@StartAsync</div>
+                <div col-3>@EndAsync</div>
+                <div col-3>@(EndAsync-StartAsync)</div>
+                <div col-3>@Ac1Async - @Ac2Async</div>
+            </div>
+        </div>
+    </div>
+</div>

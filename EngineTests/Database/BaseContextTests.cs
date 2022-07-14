@@ -16,7 +16,7 @@ namespace EngineTests.Database
             using var context = ContextFactoryTest.MakeContext();
             context.DropDatabase();
         }
-
+        
         [TestMethod]
         public void Test()
         {

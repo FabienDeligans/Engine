@@ -9,14 +9,15 @@
         <div class="col-6">
             <div class="row">
                 <div class="col-6">
-                    @*<input class="form-control" type="text" @bind="_filter" @oninput="FilterItems" placeholder="Search" id="search" />*@
                     <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange" placeholder="Search" id="search" />
                 </div>
                 <div class="btn btn-info col-2" @onclick="Clear">
                     Clear
                 </div>
-                <div class="col">
-                    <label for="search" class="col-form-label">@Quantity.ToString("N0") Items</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    @Quantity.ToString("N0") Items trouvés
                 </div>
             </div>
         </div>
@@ -27,10 +28,6 @@
     <thead>
         <tr>
             @TableHeader
-            @if (Accordion)
-            {
-                <th>Open</th>
-            }
         </tr>
     </thead>
     <tbody>
@@ -54,9 +51,8 @@
             }
             else
             {
-                <tr class="@(item.Equals(_item) && Collapse ? "border border-5 border-info" : "")">
+                <tr class="@(item.Equals(_item) && Collapse ? "border border-5 border-info" : "")" @onclick="(()=>Display(item))">
                     @RowTemplate(item)
-                    <td><button class="btn btn-dark" @onclick="(()=>Display(item))">Open</button></td>
                 </tr>
                 @if (item.Equals(_item) && Collapse)
                 {

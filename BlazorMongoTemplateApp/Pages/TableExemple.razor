@@ -1,0 +1,47 @@
+﻿@page "/tableExemple"
+
+<div class="container">
+    <div class="row">
+        <div class=" col-2">
+            <input type="number" @bind=Number class="form-control" />
+        </div>
+        <div class="col-2">
+            <button class="btn btn-info" @onclick="Generate">Generate</button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-info" @onclick="Drop">Drop</button>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+@if (Outillages != null)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+
+                <Table ItemsParameter="Outillages"
+                       WithPagination="true"
+                       SearchOn=@(v => $"{v.Libelle}{v.Id}{v.Nb}")
+                       @ref="TableOutillage">
+                    <THead>
+                        <th onclick="@(() => TableOutillage.OrderBy(nameof(Outillage.Id)))">Id</th>
+                        <th onclick="@(() => TableOutillage.OrderBy(nameof(Outillage.Libelle)))">Libelle</th>
+                        <th onclick="@(() => TableOutillage.OrderBy(nameof(Outillage.Nb)))">Nb</th>
+                        <th>Qt</th>
+                    </THead>
+                    <TBody>
+                        <td>@context.Id</td>
+                        <td>@context.Libelle</td>
+                        <td>@context.Nb</td>
+                        <td>@Exemplaires.Where(v => v.OutillageId == context.Id).Sum(v => v.Nb)</td>
+                    </TBody>
+                </Table>
+
+            </div>
+        </div>
+    </div>
+}

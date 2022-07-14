@@ -8,10 +8,11 @@ namespace Engine.Model
         public override string Id { get; set; }
         public string Name { get; set; }
         public byte[] DataBytes { get; set; }
+        public string DataString { get; set; }
         
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UploadDate { get; set; }
         public long Size { get; set; }
-
+        public string FileType { get; set; }
     }
 }

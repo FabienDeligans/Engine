@@ -1,0 +1,22 @@
+﻿@typeparam T
+
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <input class="form-control" type="text" @bind="Filter" placeholder="Search" id="search"/>
+            </div>
+            <div class="btn btn-info col-2" @onclick="SearchDatas">
+                Search
+            </div>
+            <div class="btn btn-secondary col-2" @onclick="Clear">
+                Clear
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                @CountSearch Items trouvés
+            </div>
+        </div>
+    </div>
+</div>

@@ -64,7 +64,7 @@ namespace BlazorMongoTemplateApp.Component
             Items = CustomItems;
             Quantity = Items.Count();
 
-            timerObj = new System.Timers.Timer(1000);
+            timerObj = new System.Timers.Timer(500);
             timerObj.Elapsed += OnUserFinish;
             timerObj.AutoReset = false;
         }
@@ -77,9 +77,7 @@ namespace BlazorMongoTemplateApp.Component
 
         private void OnValueChange(KeyboardEventArgs e)
         {
-            // remove previous one
             timerObj.Stop();
-            // new timer
             timerObj.Start();
         }
 
@@ -114,30 +112,7 @@ namespace BlazorMongoTemplateApp.Component
             _item = item;
             StateHasChanged();
         }
-
-        private void FilterItems(ChangeEventArgs obj)
-        {
-            _filter = obj.Value?.ToString();
-            var filterFunc = GetFilterableText;
-
-            if (!string.IsNullOrEmpty(_filter))
-            {
-                Items = Items
-                     .AsEnumerable()
-                     .Where(x => (filterFunc(x) ?? "")
-                         .Contains(_filter, StringComparison.InvariantCultureIgnoreCase));
-            }
-            else
-            {
-                Items = Items.AsEnumerable();
-            }
-
-            Quantity = Items.Count();
-
-            Index = 0;
-            StateHasChanged();
-        }
-
+        
         private void Clear()
         {
             Quantity = CustomItems.Count();
@@ -166,27 +141,11 @@ namespace BlazorMongoTemplateApp.Component
             InitDataPagination();
 
             Pages = new List<int>();
-            for (var i = 0; i < NbPage; i++)
+            var min = Index - 5 <= 1 ? 1 : Index - 5;
+            var max = Index + 5 >= NbPage ? NbPage : Index + 5 <= 10 ? 10 : Index + 5;
+            for (var i = min; i <= max; i++)
             {
-                Pages.Add(i + 1);
-            }
-
-            var min = 0;
-            var max = NbPage + 2;
-
-            if (NbPage <= 10) return;
-            switch (Index)
-            {
-                case < 5:
-                    Pages = Pages.GetRange(min, 10).ToList();
-                    break;
-                case >= 5:
-                    {
-                        var nbPageDisplay = Index + 9;
-                        var maxDisplay = max - Index + 3;
-                        Pages = Pages.GetRange(Index - 5, nbPageDisplay > max ? maxDisplay : 11).ToList();
-                        break;
-                    }
+                Pages.Add(i);
             }
         }
 
@@ -194,7 +153,7 @@ namespace BlazorMongoTemplateApp.Component
         {
             Index = numPage - 1;
             if (Index < 0) Index = 0;
-            if (Index >= NbPage) Index = NbPage - 1;
+            if (Index > NbPage) Index = NbPage - 1;
 
             GetPage();
             StateHasChanged();
@@ -214,11 +173,5 @@ namespace BlazorMongoTemplateApp.Component
             Clear();
             OnInitialized();
         }
-
-        private async Task<List<T>> GetData()
-        {
-            return await Task.FromResult(GetPage().ToList());
-        }
-
     }
 }

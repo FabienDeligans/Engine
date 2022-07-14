@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Blazored.Modal;
-using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 
 

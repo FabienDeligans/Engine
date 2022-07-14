@@ -2,12 +2,37 @@
 
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
-
-        <li class="page-item"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
-        @foreach (var i in ListPages)
+        <li class="page-item">
+            <button class="bi bi-chevron-double-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => GetDisplayItems(1)"></button>
+        </li>
+        <li class="page-item">
+            <button class="bi bi-chevron-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => GetDisplayItems(Index-1)"></button>
+        </li>
+        @foreach (var numPage in Pages)
         {
-            <li class="page-item @(Index+1 == i ? "active" : "")"><a class="page-link" @onclick="() => ChangePage(i)">@i</a></li>
+            <li class="page-item">
+                <button class="btn @(Index + 1 == numPage ? "btn-info" : "btn-light")" @onclick="() => GetDisplayItems(numPage)">@(numPage)</button>
+            </li>
         }
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <li class="page-item">
+            <button class="bi bi-chevron-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => GetDisplayItems(Index+2)"></button>
+        </li>
+        <li class="page-item">
+            <button class="bi bi-chevron-double-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => GetDisplayItems(NbPage)"></button>
+        </li>
+    </ul>
+</nav>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <input class="form-control small" min="1" type="number" @bind="PageSize"/>
+        </li>
+        <li class="page-item">
+            <button class="btn btn-info" @onclick="ChangePageSize">
+                Par pages
+                <span style="font-size: 10px">(min 5)</span>
+            </button>
+        </li>
     </ul>
 </nav>

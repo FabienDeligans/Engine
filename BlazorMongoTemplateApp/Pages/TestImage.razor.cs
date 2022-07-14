@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using BlazorMongoTemplateApp.Component;
 using BlazorMongoTemplateApp.Database;
 using Engine.Model;
 using Microsoft.AspNetCore.Components;
@@ -13,131 +15,72 @@ namespace BlazorMongoTemplateApp.Pages
     public partial class TestImage
     {
         private string Error { get; set; } = "";
-        private FileMax512 FileMax512 { get; set; }
         private Fichier Fichier { get; set; }
-
         protected override void OnInitialized()
         {
-            FileMax512 = new FileMax512();
+            using var context = ContextFactory.MakeContext();
+            context.DropDatabase();
             Fichier = new Fichier();
         }
 
-        private async Task OnUploadFileMax512(InputFileChangeEventArgs e)
-        {
-            Error = "";
-
-            try
-            {
-                if (e.File.Size >= 512000)
-                {
-                    throw new Exception("Fichier trop volumineux");
-                }
-
-                await using var stream = e.File.OpenReadStream();
-                await using var ms = new MemoryStream();
-                await stream.CopyToAsync(ms);
-                var data = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
-
-                FileMax512 = new FileMax512
-                {
-                    Name = e.File.Name, 
-                    Type = e.File.ContentType, 
-                    Size = e.File.Size, 
-                    Data = data, 
-                    CreationDate = DateTime.Now
-                }; 
-
-                using var context = ContextFactory.MakeContext();
-                context.DropDatabase();
-
-                context.Insert(FileMax512);
-
-                FileMax512 = context.QueryCollection<FileMax512>().LastOrDefault();
-
-            }
-            catch (Exception exception)
-            {
-                Error = exception.Message;
-            }
-        }
-
-
         // Called when a new file is uploaded
-        private async Task OnUploadFile(InputFileChangeEventArgs e)
+        private async Task OnUploadFileAsync(InputFileChangeEventArgs e)
         {
             Error = "";
             try
             {
-                await using var stream = e.File.OpenReadStream(99999999999);
-                await using var ms = new MemoryStream();
-                await stream.CopyToAsync(ms);
-                var arrayByte = ms.ToArray();
-
                 using var context = ContextFactory.MakeContext();
+                var file = context.UploadFileAsync(e.File);
 
-                Fichier = new Fichier
-                {
-                    Id = await context.UploadFile(e.File.Name, arrayByte)
-                };
+                WaitUpload();
+
+                Fichier = await file;
+                Id = Fichier.Id;
+                Fichier = new Fichier();
+
+                Error = "";
             }
-            
+
             catch (Exception exception)
             {
                 Error = exception.Message;
             }
+            await InvokeAsync(StateHasChanged);
         }
-        private async void DownloadFile(string id)
+
+        private void WaitUpload()
+        {
+            Error = "Uploading in progress " + DateTime.Now.ToLongTimeString();
+            StateHasChanged();
+        }
+
+        private string Id { get; set; }
+
+        private async Task LoadPictureAsync(string id)
         {
             Error = "";
             try
             {
                 using var context = ContextFactory.MakeContext();
+                var fichier = context.DownloadFileAsync(id);
 
-                Fichier = await context.DownloadFile(id);
-                var fileStream = new MemoryStream(Fichier.DataBytes);
-                using var streamRef = new DotNetStreamReference(stream: fileStream);
-                await JSRuntime.InvokeVoidAsync("downloadFileFromStream", Fichier.Name, streamRef);
+                WaitDownload();
+
+                Fichier = await fichier;
+
+                Error = "";
             }
             catch (Exception e)
             {
-
                 Error = e.Message;
             }
+            await InvokeAsync(StateHasChanged);
         }
-        
 
-        ElementReference dropZoneFile;
-        InputFile inputFile;
-
-        IJSObjectReference _module;
-        IJSObjectReference _dropZoneInstance;
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        private void WaitDownload()
         {
-            if (firstRender)
-            {
-                // Load the JS file
-                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./dropZone.js");
-
-                // Initialize the drop zone
-                _dropZoneInstance = await _module.InvokeAsync<IJSObjectReference>("initializeFileDropZone", dropZoneFile, inputFile.Element);
-            }
+            Error = "Downloading in progress " + DateTime.Now.ToLongTimeString();
+            StateHasChanged();
         }
-        
-        // Unregister the drop zone events
-        public async ValueTask DisposeAsync()
-        {
-            if (_dropZoneInstance != null)
-            {
-                await _dropZoneInstance.InvokeVoidAsync("dispose");
-                await _dropZoneInstance.DisposeAsync();
-            }
-
-            if (_module != null)
-            {
-                await _module.DisposeAsync();
-            }
-        }
-
     }
 }

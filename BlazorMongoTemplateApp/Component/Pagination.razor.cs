@@ -8,44 +8,68 @@ namespace BlazorMongoTemplateApp.Component
     public partial class Pagination<T>
     {
         [CascadingParameter]
-        public Table<T>TableParent { get; set; }
+        public Table<T> ParentTable { get; set; }
 
-        [Parameter]
-        public IEnumerable<T> Items { get; set; }
-        
-        [Parameter]
-        public int PageSize { get; set; } 
-
-        private int NbPage { get; set; }
+        private int PageSize { get; set; } = 10;
+        public int CountData { get; set; }
+        private List<int> Pages { get; set; }
         private int Index { get; set; }
+        private int NbPage { get; set; }
 
-        private List<int>ListPages { get; set; }
         protected override void OnInitialized()
         {
-            Index = 1; 
-            NbPage = (int)Math.Ceiling(Items.Count() / (double)PageSize);
-            GenerateButton(); 
-            ChangePage(Index);
+            CountData = ParentTable.PaginationItems.Count();
+            Index = 0;
+
+            GetDisplayItems(Index);
         }
 
-        private void GenerateButton()
+        private void GetDisplayItems(int index)
         {
-            ListPages = new List<int>();
-            for (int i = 1; i <= NbPage; i++)
+            NbPage = (int)Math.Ceiling(CountData / (double)PageSize);
+            Pages = new List<int>();
+
+            for (var i = 0; i < NbPage; i++)
             {
-                ListPages.Add(i);
+                Pages.Add(i + 1);
             }
+
+            var min = 0;
+            var max = NbPage + 2;
+
+            if (NbPage <= 10) return;
+            switch (Index)
+            {
+                case < 5:
+                    Pages = Pages.GetRange(min, 10).ToList();
+                    break;
+                case >= 5:
+                {
+                    var nbPageDisplay = Index + 9;
+                    var maxDisplay = max - Index + 3;
+                    Pages = Pages.GetRange(Index - 4, nbPageDisplay > max ? maxDisplay : 11).ToList();
+                    break;
+                }
+            }
+
+            Index = index - 1;
+            if (Index < 0) Index = 0;
+            if (Index > NbPage) Index = NbPage - 1;
+
+            ParentTable.DisplayItems = ParentTable.PaginationItems.Skip(Index * PageSize).Take(PageSize);
+            ParentTable.RefreshMe();
         }
 
-        private void ChangePage(int i)
+        private void ChangePageSize()
         {
-            Index = i - 1;
-            var pageDisplay = Items.Skip(Index * PageSize).Take(PageSize);
-
-            TableParent.Items = pageDisplay; 
-            TableParent.RefreshParent();
+            if (PageSize < 5)
+            {
+                PageSize = 5;
+            }
+            Index = 1;
+            GetDisplayItems(Index);
         }
-        
+
         public void RefreshMe()
         {
             OnInitialized();

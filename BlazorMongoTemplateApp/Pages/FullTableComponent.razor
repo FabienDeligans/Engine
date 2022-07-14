@@ -49,7 +49,7 @@
                 PerPage="PerPageParameter"
                 PageSize="10"
                 Accordion="AccordionParameter"
-                NbCol="3"
+                NbCol="10"
                 WithTab="WithTabParameter"
                 @ref="ChildComponentOutillage">
         <TableHeader>
@@ -60,11 +60,7 @@
         <RowTemplate>
             <td>@context.Id</td>
             <td>@context.Libelle</td>
-            <td>
-                <ToolTip Text="@GetToolTips(context.Id)">
-                    @context.Nb
-                </ToolTip>
-            </td>
+            <td>@context.Nb</td>
         </RowTemplate>
         <RenderFragmentCollapse>
             <TableComponent CustomItems="Exemplaires.Where(v => v.OutillageId == context.Id)"

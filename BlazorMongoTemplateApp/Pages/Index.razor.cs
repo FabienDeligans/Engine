@@ -1,14 +1,24 @@
-﻿namespace BlazorMongoTemplateApp.Pages
+﻿using System;
+using System.Threading.Tasks;
+
+namespace BlazorMongoTemplateApp.Pages
 {
     public partial class Index
     {
-        public string UserAgent { get; set; }
-        public string IPAddress { get; set; }
-
+        private string Date { get; set; }
+        private string Time { get; set; }
         protected override void OnInitialized()
         {
-            UserAgent = httpContextAccessor.HttpContext.Request.Headers["FromUser-Agent"];
-            IPAddress = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            var timer = new System.Threading.Timer((_) =>
+            {
+                InvokeAsync(async () =>
+                {
+                    Date = DateTime.Now.ToLongDateString();
+                    Time = DateTime.Now.ToLongTimeString(); 
+                    
+                    await InvokeAsync(StateHasChanged);
+                });
+            }, null, 0, 500);
         }
     }
 }

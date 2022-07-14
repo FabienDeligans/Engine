@@ -41,105 +41,80 @@ namespace BlazorMongoTemplateApp.Pages
 
             Models = context.QueryCollection<Model>().ToList();
         }
-
-        private void HandleDrop(Model landingModel)
-        {
-            using var context = ContextFactory.MakeContext();
-
-            //landing model -> where the drop happened
-            if (draggingModel is null) return;
-
-            //keep the original order for later
-            int originalOrderLanding = landingModel.Order;
-            
-            //increase model uned by 1
-            Models.Where(x => x.Order >= landingModel.Order).ToList().ForEach(x => x.Order++);
-            draggingModel.Order = originalOrderLanding;//replace landing model
-            int ii = 0;
-            foreach (var model in Models.OrderBy(x => x.Order).ToList())
-            {
-                model.Order = ii++;//keep the numbers from 0 to size-1
-                model.IsDragOver = false;//remove drag over.
-                context.UpdateEntity(model);
-            }
-
-            Models = context.QueryCollection<Model>().ToList();
-        }
-
-        private Model? draggingModel;//the model that is being dragged
-
-
-
+        
+        /// <summary>
+        /// mudblazor
+        /// </summary>
         private MudDropContainer<DropItem> _container;
 
-	private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
-	{
-		dropItem.Item.Selector = dropItem.DropzoneIdentifier;
+        private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
+        {
+            dropItem.Item.Selector = dropItem.DropzoneIdentifier;
 
-		var indexOffset = dropItem.DropzoneIdentifier switch
-		{
-			"2"  => _serverData.Count(x => x.Selector == "1"),
-			_ => 0,
-		};
+            var indexOffset = dropItem.DropzoneIdentifier switch
+            {
+                "2" => _serverData.Count(x => x.Selector == "1"),
+                _ => 0,
+            };
 
-		_serverData.UpdateOrder(dropItem, item => item.Order, indexOffset);
-	}
+            _serverData.UpdateOrder(dropItem, item => item.Order, indexOffset);
+        }
 
-	private List<DropItem> _dropzoneItems = new();
+        private List<DropItem> _dropzoneItems = new();
 
-	private List<DropItem> _serverData = new()
-		{
-			new DropItem() { Order = 0, Name = "Item 1", Selector = "1" },
-			new DropItem() { Order = 1, Name = "Item 2", Selector = "1" },
-			new DropItem() { Order = 2, Name = "Item 3", Selector = "1" },
-			new DropItem() { Order = 3, Name = "Item 4", Selector = "1" },
-			new DropItem() { Order = 4, Name = "Item 5", Selector = "1" },
-			new DropItem() { Order = 5, Name = "Item 6", Selector = "1" },
-			new DropItem() { Order = 6, Name = "Item 7", Selector = "2" },
-			new DropItem() { Order = 7, Name = "Item 8", Selector = "2" },
-			new DropItem() { Order = 8, Name = "Item 9", Selector = "2" },
-			new DropItem() { Order = 9, Name = "Item 10", Selector = "2" },
-		};
+        private List<DropItem> _serverData = new()
+        {
+            new DropItem() { Order = 0, Name = "Item 1", Selector = "1" },
+            new DropItem() { Order = 1, Name = "Item 2", Selector = "1" },
+            new DropItem() { Order = 2, Name = "Item 3", Selector = "1" },
+            new DropItem() { Order = 3, Name = "Item 4", Selector = "1" },
+            new DropItem() { Order = 4, Name = "Item 5", Selector = "1" },
+            new DropItem() { Order = 5, Name = "Item 6", Selector = "1" },
+            new DropItem() { Order = 6, Name = "Item 7", Selector = "2" },
+            new DropItem() { Order = 7, Name = "Item 8", Selector = "2" },
+            new DropItem() { Order = 8, Name = "Item 9", Selector = "2" },
+            new DropItem() { Order = 9, Name = "Item 10", Selector = "2" },
+        };
 
-	private void RefreshContainer()
-	{
-		//update the binding to the container
-		StateHasChanged();
+        private void RefreshContainer()
+        {
+            //update the binding to the container
+            StateHasChanged();
 
-		//the container refreshes the internal state
-		_container.Refresh();
-	}
+            //the container refreshes the internal state
+            _container.Refresh();
+        }
 
-	private void LoadServerData()
-	{
-		List<DropItem> newdata = new List<DropItem>();
+        private void LoadServerData()
+        {
+            List<DropItem> newdata = new List<DropItem>();
 
-		foreach (var item in _serverData.OrderBy(x => x.Order))
-		{
-			newdata.Add(item);
-		}
+            foreach (var item in _serverData.OrderBy(x => x.Order))
+            {
+                newdata.Add(item);
+            }
 
-		_dropzoneItems = newdata;
-		RefreshContainer();
-	}
+            _dropzoneItems = newdata;
+            RefreshContainer();
+        }
 
-	private void SaveData() => _serverData = _dropzoneItems;
+        private void SaveData() => _serverData = _dropzoneItems;
 
-	private void Reset()
-	{
-		_dropzoneItems = new();
-		_serverData = new()
-			{
-				new DropItem() { Order = 0, Name = "Item 1", Selector = "1" },
-				new DropItem() { Order = 1, Name = "Item 2", Selector = "1" },
-				new DropItem() { Order = 2, Name = "Item 3", Selector = "1" },
-				new DropItem() { Order = 3, Name = "Item 4", Selector = "1" },
-				new DropItem() { Order = 4, Name = "Item 5", Selector = "1" },
-				new DropItem() { Order = 5, Name = "Item 6", Selector = "1" },
-				new DropItem() { Order = 6, Name = "Item 7", Selector = "1" },
-				new DropItem() { Order = 7, Name = "Item 8", Selector = "1" },
-				new DropItem() { Order = 8, Name = "Item 9", Selector = "1" },
-				new DropItem() { Order = 9, Name = "Item 10", Selector = "1" },
+        private void Reset()
+        {
+            _dropzoneItems = new();
+            _serverData = new()
+            {
+                new DropItem() { Order = 0, Name = "Item 1", Selector = "1" },
+                new DropItem() { Order = 1, Name = "Item 2", Selector = "1" },
+                new DropItem() { Order = 2, Name = "Item 3", Selector = "1" },
+                new DropItem() { Order = 3, Name = "Item 4", Selector = "1" },
+                new DropItem() { Order = 4, Name = "Item 5", Selector = "1" },
+                new DropItem() { Order = 5, Name = "Item 6", Selector = "1" },
+                new DropItem() { Order = 6, Name = "Item 7", Selector = "1" },
+                new DropItem() { Order = 7, Name = "Item 8", Selector = "1" },
+                new DropItem() { Order = 8, Name = "Item 9", Selector = "1" },
+                new DropItem() { Order = 9, Name = "Item 10", Selector = "1" },
 
                 new DropItem() { Order = 10, Name = "Item 11", Selector = "1" },
                 new DropItem() { Order = 11, Name = "Item 12", Selector = "1" },
@@ -162,17 +137,17 @@ namespace BlazorMongoTemplateApp.Pages
                 new DropItem() { Order = 27, Name = "Item 28", Selector = "2" },
                 new DropItem() { Order = 28, Name = "Item 29", Selector = "2" },
                 new DropItem() { Order = 29, Name = "Item 20", Selector = "2" },
-		};
+            };
 
-		RefreshContainer();
-	}
+            RefreshContainer();
+        }
 
-	public class DropItem
-	{
-		public string Name { get; init; }
-		public string Selector { get; set; }
-		public int Order { get; set; }
-	}
+        public class DropItem
+        {
+            public string Name { get; init; }
+            public string Selector { get; set; }
+            public int Order { get; set; }
+        }
 
     }
 }

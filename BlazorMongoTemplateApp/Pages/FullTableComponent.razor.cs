@@ -8,6 +8,8 @@ using BlazorMongoTemplateApp.Component.Modal.Called;
 using BlazorMongoTemplateApp.Component.Modal.Caller;
 using BlazorMongoTemplateApp.Database;
 using BlazorMongoTemplateApp.Models;
+using Engine.Model;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorMongoTemplateApp.Pages
 {
@@ -65,7 +67,7 @@ namespace BlazorMongoTemplateApp.Pages
             await InvokeAsync(StateHasChanged);
         }
 
-        private void Generate()
+        private async void Generate()
         {
             using var context = ContextFactory.MakeContext();
 
@@ -75,13 +77,13 @@ namespace BlazorMongoTemplateApp.Pages
                 listOutillage.Add(new Outillage
                 {
                     Libelle = RandomString(10),
-                    Nb = new Random().Next(0, 11)
+                    Nb = new Random().Next(0, 11), 
                 });
             }
 
             context.InsertAll(listOutillage);
             Outillages = context.QueryCollection<Outillage>().ToList();
-
+            
             var listExemplaire = new List<Exemplaire>();
             foreach (var outillage in Outillages)
             {
@@ -98,7 +100,7 @@ namespace BlazorMongoTemplateApp.Pages
             context.InsertAll(listExemplaire);
             Exemplaires = context.QueryCollection<Exemplaire>().ToList();
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
 
         private void Drop()
@@ -110,18 +112,5 @@ namespace BlazorMongoTemplateApp.Pages
             InvokeAsync(StateHasChanged);
         }
 
-        private string ToolTip(string id)
-        {
-            return
-                $@"Nb d'exemplaires : 
-                {Exemplaires
-                    .Where(v => v.OutillageId == id)
-                    .Sum(v => v.Nb)}";
-        }
-
-        private List<string> GetToolTips(string contextId)
-        {
-            return new List<string>{contextId, null}; 
-        }
     }
 }

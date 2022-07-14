@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Model;
+using Microsoft.AspNetCore.Components.Forms;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 using ForeignKeyAttribute = Engine.CustomAttribute.ForeignKeyAttribute;
+using static Engine.Handler.Handler;
 
 namespace Engine.Database
 {
@@ -31,18 +34,37 @@ namespace Engine.Database
         {
         }
 
-        public async Task<string> UploadFile(string filename, Byte[] data)
+        public async Task<Fichier> UploadFileAsync(IBrowserFile file)
         {
             var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
             {
                 ChunkSizeBytes = 261120,
                 WriteConcern = WriteConcern.WMajority,
             });
-            var objectId = await bucket.UploadFromBytesAsync(filename, data);
-            return objectId.ToString(); 
+
+            await using var stream = file.OpenReadStream(99999999999);
+            await using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var arrayByte = ms.ToArray();
+
+            var id = await bucket.UploadFromBytesAsync(file.Name, arrayByte);
+
+            var fichier = new Fichier
+            {
+                Id = id.ToString(),
+                Name = file.Name,
+                UploadDate = DateTime.Now,
+                Size = file.Size,
+                DataBytes = arrayByte,
+                FileType = GetTypeMime(file.Name),
+                DataString = "data:" + GetTypeMime(file.Name) + ";base64," + Convert.ToBase64String(arrayByte)
+            };
+
+            stream.Close();
+            return fichier;
         }
 
-        public async Task<Fichier> DownloadFile(string id)
+        public async Task<Fichier> DownloadFileAsync(string id)
         {
             var bucket = new GridFSBucket(_mongoDatabase, new GridFSBucketOptions
             {
@@ -50,34 +72,28 @@ namespace Engine.Database
                 ReadConcern = ReadConcern.Majority,
             });
 
+            var objectId = ObjectId.Parse(id);
 
-            var objectId = ObjectId.Parse(id); 
+            var arrayByteTask = bucket.DownloadAsBytesAsync(objectId);
+            using var streamTask = bucket.OpenDownloadStreamAsync(objectId);
 
-            var result = await bucket.DownloadAsBytesAsync(objectId);
-
-            await using var stream = await bucket.OpenDownloadStreamAsync(objectId);
+            var arrayByte = await arrayByteTask;
+            var stream = await streamTask;
 
             var fichier = new Fichier
             {
-                Id = stream.FileInfo.Id.ToString(), 
-                Name = stream.FileInfo.Filename, 
-                UploadDate = stream.FileInfo.UploadDateTime, 
-                Size = stream.FileInfo.Length, 
-                DataBytes = result
-
-            }; 
-            var fileId = stream.FileInfo.Id; 
-            var fileName= stream.FileInfo.Filename;
-            var fileUploadDateTime = stream.FileInfo.UploadDateTime;
-            var fileLength = stream.FileInfo.Length;
+                Id = stream.FileInfo.Id.ToString(),
+                Name = stream.FileInfo.Filename,
+                UploadDate = stream.FileInfo.UploadDateTime,
+                Size = stream.FileInfo.Length,
+                DataBytes = arrayByte,
+                FileType = GetTypeMime(stream.FileInfo.Filename),
+                DataString = "data:" + GetTypeMime(stream.FileInfo.Filename) + ";base64," + Convert.ToBase64String(arrayByte)
+            };
 
             stream.Close();
-
-            return (fichier); 
-
+            return fichier;
         }
-
-
 
         public void DropDatabase() => MongoClient.DropDatabase(DatabaseName);
 
@@ -182,7 +198,7 @@ namespace Engine.Database
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public T GetEntityWithForeignKey<T>(IEntity entity) where T : IEntity
+        public async Task<T> GetEntityWithForeignKey<T>(IEntity entity) where T : IEntity
         {
             var type = entity.GetType();
             var properties = type.GetProperties();
@@ -195,10 +211,18 @@ namespace Engine.Database
                     var typeOfForeignKey = fkAttribute.TheType;
                     var valueOfForeignKey = propertyInfo.GetValue(entity);
 
-                    var methodInfo = this.GetType().GetMethod(nameof(GetEntity));
-                    var genericMethod = methodInfo?.MakeGenericMethod(typeOfForeignKey);
-                    var entitiesResultQuery = genericMethod?.Invoke(this, new[] { valueOfForeignKey });
-                    if (entitiesResultQuery == null) continue;
+                    var entitiesResultQuery = new object();
+                    if (typeOfForeignKey == typeof(Fichier))
+                    {
+                        entitiesResultQuery = await DownloadFileAsync(valueOfForeignKey.ToString());
+                    }
+                    else
+                    {
+                        var methodInfo = this.GetType().GetMethod(nameof(GetEntity));
+                        var genericMethod = methodInfo?.MakeGenericMethod(typeOfForeignKey);
+                        entitiesResultQuery = genericMethod?.Invoke(this, new[] { valueOfForeignKey });
+                        if (entitiesResultQuery == null) continue;
+                    }
 
                     PropertyInfo propToUpdate = null;
                     foreach (var property in properties)
