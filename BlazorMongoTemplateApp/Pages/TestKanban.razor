@@ -1,0 +1,40 @@
+﻿@page "/testKanban"
+
+<p class="col-3">
+    <input type="text" class="form-control" @bind="NewCol"/><button class="btn btn-secondary" @onclick="AddNewCol">Add Col</button>
+</p>
+
+<div class="container-fluid">
+    <div class="row">
+        <table>
+            <tbody>
+                @foreach (var nb in Rows)
+                {
+                    <tr>
+                        @foreach (var lettre in Cols)
+                        {
+                            <td>
+                                <div class="col">
+                                    <div class="row">
+                                        @foreach (var position in Positions)
+                                        {
+                                            <div>
+                                                <div>@lettre@nb@position</div>
+                                                @*@foreach (var art in Articles)
+                                                    {
+                                                    <div>@art.Libelle - @art.IdArticle</div>
+                                                    }*@
+                                            </div>
+                                        }
+                                    </div>
+                                    <br />
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
