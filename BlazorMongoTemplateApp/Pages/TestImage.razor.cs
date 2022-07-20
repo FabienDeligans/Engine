@@ -24,7 +24,7 @@ namespace BlazorMongoTemplateApp.Pages
         }
 
         // Called when a new file is uploaded
-        private async Task OnUploadFileAsync(InputFileChangeEventArgs e)
+        private async Task UploadFileIntoDatabaseAsync(InputFileChangeEventArgs e)
         {
             Error = "";
             try
@@ -56,7 +56,7 @@ namespace BlazorMongoTemplateApp.Pages
 
         private string Id { get; set; }
 
-        private async Task LoadPictureAsync(string id)
+        private async Task DownloadPictureFromDatabaseAsync(string id)
         {
             Error = "";
             try

@@ -1,8 +1,13 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
 
 <h3>Index</h3>
 
-@Date
-@Time
+@Date @Time
+
+<br />
+
+<p>
+    @Counter
+    <button class="btn btn-danger" @onclick="Add">Clic</button>
+</p>

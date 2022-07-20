@@ -19,10 +19,10 @@
     <div class="col-6">
         <h3>Drag and drop file</h3>
         <br/>
-        <DropZone OnUploadFile="OnUploadFileAsync"></DropZone>
+        <DropZone OnUploadFile="UploadFileIntoDatabaseAsync"></DropZone>
         <br/>
         <img src="@Fichier.DataString" height="250"/>
-        <button class="btn btn-info" @onclick="@(()=>LoadPictureAsync(Id))">Get Picture</button>
+        <button class="btn btn-info" @onclick="@(()=>DownloadPictureFromDatabaseAsync(Id))">Get Picture</button>
         <a href="@Fichier.DataString" download class="btn btn-info">Download</a>
     </div>
 
