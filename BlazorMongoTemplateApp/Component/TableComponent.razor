@@ -3,116 +3,125 @@
 @using System.Globalization
 @typeparam T
 
-@if (Search)
-{
-    <div class="row">
-        <div class="col-6">
-            <div class="row">
-                <div class="col-6">
-                    <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange" placeholder="Search" id="search" />
+<div class="position-static">
+
+    @if (Search)
+    {
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6">
+                        <input class="form-control" type="text" @bind-value="_filter" @bind-value:event="oninput" @onkeyup="@OnValueChange" placeholder="Search" id="search" />
+                    </div>
+                    <div class="btn btn-info col-2" @onclick="Clear">
+                        Clear
+                    </div>
                 </div>
-                <div class="btn btn-info col-2" @onclick="Clear">
-                    Clear
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    @Quantity.ToString("N0") Items trouvés
+                <div class="row">
+                    <div class="col-12">
+                        @Quantity.ToString("N0") Items trouvés
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+    <div style="overflow-y: auto; max-height: 500px;">
 
-<table class="table table-hover table-sm">
-    <thead>
-        <tr>
-            @TableHeader
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in GetPage())
-        {
-            @if (!Accordion)
-            {
-                <tr>@RowTemplate(item)</tr>
-                @if (RenderFragmentCollapse != null)
-                {
-                    <tr class="border border-5 border-info">
-                        @if (WithTab)
-                        {
-                            <td></td>
-                        }
-                        <td colspan="@NbCol">
-                            @RenderFragmentCollapse(item)
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr class="@(item.Equals(_item) && Collapse ? "border border-5 border-info" : "")" @onclick="(()=>Display(item))">
-                    @RowTemplate(item)
+        <table class="table table-hover table-sm">
+            <thead class="sticky-top">
+                <tr style="background-color: white">
+                    @TableHeader
                 </tr>
-                @if (item.Equals(_item) && Collapse)
+            </thead>
+            <tbody>
+                @foreach (var item in GetPage())
                 {
-                    <tr class="border border-5 border-info">
-                        @if (WithTab)
+                    @if (!Accordion)
+                    {
+                        <tr>@RowTemplate(item)</tr>
+                        @if (RenderFragmentCollapse != null)
                         {
-                            <td></td>
+                            <tr class="border border-5 border-info">
+                                @if (WithTab)
+                                {
+                                    <td></td>
+                                }
+                                <td colspan="@NbCol">
+                                    @RenderFragmentCollapse(item)
+                                </td>
+                            </tr>
                         }
-                        <td colspan="@NbCol">
-                            @RenderFragmentCollapse(item)
-                        </td>
-                    </tr>
+                    }
+                    else
+                    {
+                        <tr class="@(item.Equals(_item) && Collapse ? "border border-5 border-info" : "")" @onclick="(()=>Display(item))">
+                            @RowTemplate(item)
+                        </tr>
+                        @if (item.Equals(_item) && Collapse)
+                        {
+                            <tr class="border border-5 border-info">
+                                @if (WithTab)
+                                {
+                                    <td></td>
+                                }
+                                <td colspan="@NbCol">
+                                    @RenderFragmentCollapse(item)
+                                </td>
+                            </tr>
+                        }
+                    }
                 }
-            }
-        }
-    </tbody>
-</table>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
 
-@if (Pagination)
-{
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <button class="bi bi-chevron-double-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(1)"></button>
-            </li>
-            <li class="page-item">
-                <button class="bi bi-chevron-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(Index)"></button>
-            </li>
-            @foreach (var numPage in Pages)
-            {
-                <li class="page-item">
-                    <button class="btn @(Index + 1 == numPage ? "btn-info" : "btn-light")" @onclick="() => ChangePage(numPage)">@(numPage)</button>
-                </li>
-            }
-            <li class="page-item">
-                <button class="bi bi-chevron-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(Index+2)"></button>
-            </li>
-            <li class="page-item">
-                <button class="bi bi-chevron-double-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(NbPage+2)"></button>
-            </li>
-        </ul>
-    </nav>
+    </div>
 
-    @if (PerPage)
+    @if (Pagination)
     {
+        <hr style="align-content: center; height: 4px"/>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
-                    <button class="btn @(PageSize == 5 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(5)">5</button>
+                    <button class="bi bi-chevron-double-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(1)"></button>
                 </li>
                 <li class="page-item">
-                    <button class="btn @(PageSize == 10 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(10)">10</button>
+                    <button class="bi bi-chevron-left btn btn-light @(Index == 0 ? "disabled" : "")" @onclick="() => ChangePage(Index)"></button>
+                </li>
+                @foreach (var numPage in Pages)
+                {
+                    <li class="page-item">
+                        <button class="btn @(Index + 1 == numPage ? "btn-info" : "btn-light")" @onclick="() => ChangePage(numPage)">@(numPage)</button>
+                    </li>
+                }
+                <li class="page-item">
+                    <button class="bi bi-chevron-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(Index+2)"></button>
                 </li>
                 <li class="page-item">
-                    <button class="btn @(PageSize == 20 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(20)">20</button>
-                </li>
-                <li class="page-item">
-                    <button class="btn btn-light" disabled="">Par pages</button>
+                    <button class="bi bi-chevron-double-right btn btn-light @(Index >= NbPage-1 ? "disabled" : "")" @onclick="() => ChangePage(NbPage+2)"></button>
                 </li>
             </ul>
         </nav>
+
+        @if (PerPage)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <button class="btn @(PageSize == 5 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(5)">5</button>
+                    </li>
+                    <li class="page-item">
+                        <button class="btn @(PageSize == 10 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(10)">10</button>
+                    </li>
+                    <li class="page-item">
+                        <button class="btn @(PageSize == 20 ? "btn-info" : "btn-light")" @onclick="() => ChangePageSize(20)">20</button>
+                    </li>
+                    <li class="page-item">
+                        <button class="btn btn-light" disabled="">Par pages</button>
+                    </li>
+                </ul>
+            </nav>
+        }
     }
-}
+</div>

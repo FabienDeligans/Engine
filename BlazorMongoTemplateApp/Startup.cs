@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using System.Text;
 using Blazored.Modal;
 using MudBlazor.Services;
 
@@ -32,6 +33,7 @@ namespace BlazorMongoTemplateApp
 
             services.AddMudServices();
 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             services.AddResponseCompression(opts =>
             {

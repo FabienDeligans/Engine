@@ -61,6 +61,12 @@ namespace BlazorMongoTemplateApp.Component
 
         protected override void OnInitialized()
         {
+            NbCol = typeof(T).GetProperties().Length;
+            if (WithTab)
+            {
+                NbCol --; 
+            }
+
             Items = CustomItems;
             Quantity = Items.Count();
 
@@ -141,8 +147,8 @@ namespace BlazorMongoTemplateApp.Component
             InitDataPagination();
 
             Pages = new List<int>();
-            var min = Index - 5 <= 1 ? 1 : Index - 5;
-            var max = Index + 5 >= NbPage ? NbPage : Index + 5 <= 10 ? 10 : Index + 5;
+            var min = Index - 4 <= 1 ? 1 : Index - 4;
+            var max = Index + 5 >= NbPage ? NbPage : Index + 6 <= 10 ? 10 : Index + 6;
             for (var i = min; i <= max; i++)
             {
                 Pages.Add(i);
