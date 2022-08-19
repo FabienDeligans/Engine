@@ -37,11 +37,11 @@
                     NbCol="0"
                     @ref="ChildComponent">
         <TableHeader>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Id)))"><b>Id</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.IsDisabled)))"><b>Is Disabled</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Numeric)))"><b>Numeric</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Data)))"><b>Data</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.Sort(nameof(MyEntity.Now)))"><b>Now</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.SortBy(v => v.Id))"><b>Id</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.SortBy(v => v.IsDisabled))"><b>Is Disabled</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.SortBy(v => v.Numeric))"><b>Numeric</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.SortBy(v => v.Data))"><b>Data</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponent.SortBy(v => v.Now))"><b>Now</b></button></th>
             <th>Update</th>
             <th>Delete</th>
         </TableHeader>

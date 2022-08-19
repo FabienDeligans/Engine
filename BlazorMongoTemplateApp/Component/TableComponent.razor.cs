@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using System.Timers;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -102,7 +102,7 @@ namespace BlazorMongoTemplateApp.Component
                 }
                 else
                 {
-                    Items = Items.AsEnumerable();
+                    Items = Items;
                 }
 
                 Quantity = Items.Count();
@@ -126,12 +126,14 @@ namespace BlazorMongoTemplateApp.Component
             StateHasChanged();
         }
 
-        public void Sort(string property)
+        public void SortBy(Expression<Func<T, object>> predicate)
         {
             Items = CustomItems;
-            Items = SortByAscending ?
-                Items.OrderBy(v => v.GetType().GetProperty(property)?.GetValue(v)) :
-                Items.OrderByDescending(v => v.GetType().GetProperty(property)?.GetValue(v));
+
+            Items = SortByAscending ? 
+                Items.AsQueryable().OrderBy(predicate) : 
+                Items.AsQueryable().OrderByDescending(predicate); 
+
             SortByAscending = !SortByAscending;
             StateHasChanged();
         }

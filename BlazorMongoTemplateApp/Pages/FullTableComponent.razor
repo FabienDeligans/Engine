@@ -53,9 +53,9 @@
                 WithTab="WithTabParameter"
                 @ref="ChildComponentOutillage">
         <TableHeader>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Id)))"><b>Id</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Libelle)))"><b>Libelle</b></button></th>
-            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.Sort(nameof(Outillage.Nb)))"><b>Outillage Nb</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.SortBy(v => v.Id))"><b>Id</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.SortBy(v => v.Libelle))"><b>Libelle</b></button></th>
+            <th><button class="btn btn-light" @onclick="@(() => ChildComponentOutillage.SortBy(v => v.Nb))"><b>Outillage Nb</b></button></th>
         </TableHeader>
         <RowTemplate>
             <td>@context.Id</td>
