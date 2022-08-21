@@ -9,13 +9,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.6" />
+		<PackageReference Include="Faker.Net" Version="2.0.154" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-		<PackageReference Include="MongoDB.Driver" Version="2.16.1" />
-		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.16.1" />
+		<PackageReference Include="MongoDB.Driver" Version="2.17.1" />
+		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.17.1" />
 	</ItemGroup>
 
 </Project>
