@@ -1,14 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using BlazorMongoTemplateApp.Component;
 using BlazorMongoTemplateApp.Database;
 using Engine.Model;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
 
 namespace BlazorMongoTemplateApp.Pages
 {

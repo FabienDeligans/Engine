@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using BlazorMongoTemplateApp.Database;
 using BlazorMongoTemplateApp.Models.TestModelCommande;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
-using PdfSharp;
-using PdfSharp.Charting;
-using PdfSharp.Drawing;
-using PdfSharp.Drawing.Layout;
 using PdfSharp.Pdf;
 using Document = MigraDoc.DocumentObjectModel.Document;
 using VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment;

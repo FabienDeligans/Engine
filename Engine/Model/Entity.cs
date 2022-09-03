@@ -7,6 +7,5 @@ namespace Engine.Model
         [BsonIgnore]
         public abstract string Id { get; set; }
         public bool IsDisabled { get; set; }
-        
     }
 }

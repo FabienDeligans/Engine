@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using BlazorMongoTemplateApp.Models.CustomAttribute;
-using Engine.CustomAttribute;
+using BlazorMongoTemplateApp.Models.TestModelCommande;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace BlazorMongoTemplateApp.Models
@@ -12,7 +12,7 @@ namespace BlazorMongoTemplateApp.Models
     /// </summary>
     public class MyEntity : Entity
     {
-        [BsonId(IdGenerator = typeof(IdGenerator<MyEntity>))]
+        [BsonId(IdGenerator = typeof(GeneratorId<MyEntity>))]
         public override string Id { get; set; }
 
         [Required]
